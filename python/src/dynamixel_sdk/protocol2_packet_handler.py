@@ -197,10 +197,9 @@ class Protocol2PacketHandler(object):
                     packet[i + PKT_INSTRUCTION - 1] == 0xFF) and (packet[i + PKT_INSTRUCTION - 2] == 0xFF):
                 # FF FF FD FD
                 packet_length_out = packet_length_out - 1
-                i += 1
-
-            packet[index] = packet[i + PKT_INSTRUCTION]
-            index += 1
+            else:
+                packet[index] = packet[i + PKT_INSTRUCTION]
+                index += 1
 
         packet[index] = packet[PKT_INSTRUCTION + packet_length_in - 2]
         packet[index + 1] = packet[PKT_INSTRUCTION + packet_length_in - 1]
