@@ -690,6 +690,24 @@ void reboot2(int port_num, uint8_t id)
   txRxPacket2(port_num);
 }
 
+void clearMultiTurn2(int port_num, uint8_t id)
+{
+  packetData[port_num].tx_packet = (uint8_t *)realloc(packetData[port_num].tx_packet, 15);
+  packetData[port_num].rx_packet = (uint8_t *)realloc(packetData[port_num].rx_packet, 11);
+
+  packetData[port_num].tx_packet[PKT_ID] = id;
+  packetData[port_num].tx_packet[PKT_LENGTH_L] = 8;
+  packetData[port_num].tx_packet[PKT_LENGTH_H] = 0;
+  packetData[port_num].tx_packet[PKT_INSTRUCTION] = INST_CLEAR;
+  packetData[port_num].tx_packet[PKT_PARAMETER0] = 0x01;
+  packetData[port_num].tx_packet[PKT_PARAMETER0+1] = 0x44;
+  packetData[port_num].tx_packet[PKT_PARAMETER0+2] = 0x58;
+  packetData[port_num].tx_packet[PKT_PARAMETER0+3] = 0x4C;
+  packetData[port_num].tx_packet[PKT_PARAMETER0+4] = 0x22;
+
+  txRxPacket2(port_num);
+}
+
 void factoryReset2(int port_num, uint8_t id, uint8_t option)
 {
   packetData[port_num].tx_packet = (uint8_t *)realloc(packetData[port_num].tx_packet, 11);

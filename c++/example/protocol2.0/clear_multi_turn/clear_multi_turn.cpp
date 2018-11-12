@@ -55,7 +55,8 @@
 #define TORQUE_ENABLE                   1                   // Value for enabling the torque
 #define TORQUE_DISABLE                  0                   // Value for disabling the torque
 #define MAX_POSITION_VALUE              1048575
-#define EXT_POSITION_CONTROL_MODE       4                   // value for extended position control mode (operating mode)
+#define DXL_MOVING_STATUS_THRESHOLD     20                  // Dynamixel moving status threshold
+#define EXT_POSITION_CONTROL_MODE       4                   // Value for extended position control mode (operating mode)
 
 #define ESC_ASCII_VALUE                 0x1b
 #define SPACE_ASCII_VALUE               0x20
@@ -245,6 +246,7 @@ int main()
 
           msecSleep(300);
 
+          // Clear Multi-Turn Information
           dxl_comm_result = packetHandler->clearMultiTurn(portHandler, DXL_ID, &dxl_error);
           if (dxl_comm_result != COMM_SUCCESS)
           {
@@ -289,7 +291,7 @@ int main()
         }
       }
 
-    }while((abs(MAX_POSITION_VALUE - dxl_present_position) > 20));
+    }while((abs(MAX_POSITION_VALUE - dxl_present_position) > DXL_MOVING_STATUS_THRESHOLD));
 
     printf("\n");
   }
