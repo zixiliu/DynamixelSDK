@@ -44,6 +44,7 @@ WINDECLSPEC uint8_t     getBroadcastPingResult1 (int port_num, int id);
 
 WINDECLSPEC void        action1             (int port_num, uint8_t id);
 WINDECLSPEC void        reboot1             (int port_num, uint8_t id);
+WINDECLSPEC void        clearMultiTurn1     (int port_num, uint8_t id);
 WINDECLSPEC void        factoryReset1       (int port_num, uint8_t id, uint8_t option);
 
 WINDECLSPEC void        readTx1             (int port_num, uint8_t id, uint16_t address, uint16_t length);

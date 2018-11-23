@@ -69,6 +69,8 @@ interface LibFunction extends Library
 
   public void    reboot                  (int port_num, int protocol_version, byte id);
 
+  public void    clearMultiTurn          (int port_num, int protocol_version, byte id);
+  
   public void    factoryReset            (int port_num, int protocol_version, byte id, byte option);
 
   public void    readTx                  (int port_num, int protocol_version, byte id, short address, short length);
@@ -290,6 +292,11 @@ public class Dynamixel
     libFunction.reboot(port_num, protocol_version, id);
   }
 
+  public void clearMultiTurn(int port_num, int protocol_version, byte id)
+  {
+    libFunction.clearMultiTurn(port_num, protocol_version, id);
+  }
+  
   public void factoryReset(int port_num, int protocol_version, byte id, byte option)
   {
     libFunction.factoryReset(port_num, protocol_version, id, option);
