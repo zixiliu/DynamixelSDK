@@ -612,6 +612,24 @@ int Protocol2PacketHandler::reboot(PortHandler *port, uint8_t id, uint8_t *error
   return txRxPacket(port, txpacket, rxpacket, error);
 }
 
+int Protocol2PacketHandler::clearMultiTurn(PortHandler *port, uint8_t id, uint8_t *error)
+{
+  uint8_t txpacket[15]        = {0};
+  uint8_t rxpacket[11]        = {0};
+
+  txpacket[PKT_ID]            = id;
+  txpacket[PKT_LENGTH_L]      = 8;
+  txpacket[PKT_LENGTH_H]      = 0;
+  txpacket[PKT_INSTRUCTION]   = INST_CLEAR;
+  txpacket[PKT_PARAMETER0]    = 0x01;
+  txpacket[PKT_PARAMETER0+1]  = 0x44;
+  txpacket[PKT_PARAMETER0+2]  = 0x58;
+  txpacket[PKT_PARAMETER0+3]  = 0x4C;
+  txpacket[PKT_PARAMETER0+4]  = 0x22;
+
+  return txRxPacket(port, txpacket, rxpacket, error);
+}
+
 int Protocol2PacketHandler::factoryReset(PortHandler *port, uint8_t id, uint8_t option, uint8_t *error)
 {
   uint8_t txpacket[11]        = {0};
