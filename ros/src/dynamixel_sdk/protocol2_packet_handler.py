@@ -21,8 +21,8 @@
 
 from .robotis_def import *
 
-TXPACKET_MAX_LEN = 4 * 1024
-RXPACKET_MAX_LEN = 4 * 1024
+TXPACKET_MAX_LEN = 1 * 1024
+RXPACKET_MAX_LEN = 1 * 1024
 
 # for Protocol 2.0 Packet
 PKT_HEADER0 = 0
