@@ -185,7 +185,20 @@ class WINDECLSPEC Protocol2PacketHandler : public PacketHandler
   /// @return COMM_NOT_AVAILABLE
   ////////////////////////////////////////////////////////////////////////////////
   int reboot          (PortHandler *port, uint8_t id, uint8_t *error = 0);
-
+  
+  ////////////////////////////////////////////////////////////////////////////////
+  /// @brief The function that makes Dynamixel clear multi turn
+  /// @description The function makes an instruction packet with INST_CLEAR,
+  /// @description transmits the packet with Protocol2PacketHandler::txRxPacket(),
+  /// @description then Dynamixel rotate multi turn,
+  /// @description and reset position value when pressing space key.
+  /// @param port PortHandler instance
+  /// @param id Dynamixel ID
+  /// @param error Dynamixel hardware error
+  /// @return COMM_NOT_AVAILABLE
+  ////////////////////////////////////////////////////////////////////////////////
+  int clearMultiTurn          (PortHandler *port, uint8_t id, uint8_t *error = 0);
+  
   ////////////////////////////////////////////////////////////////////////////////
   /// @brief The function that makes Dynamixel reset as it was produced in the factory
   /// @description The function makes an instruction packet with INST_FACTORY_RESET,
