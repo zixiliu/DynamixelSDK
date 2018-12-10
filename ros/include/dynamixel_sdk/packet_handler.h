@@ -52,7 +52,7 @@
 #define INST_BULK_READ          146     // 0x92
 // --- Only for 2.0 --- //
 #define INST_REBOOT             8
-#define INST_CLEAR              16
+#define INST_CLEAR              16      // 0x10
 #define INST_STATUS             85      // 0x55
 #define INST_SYNC_READ          130     // 0x82
 #define INST_BULK_WRITE         147     // 0x93
@@ -222,19 +222,19 @@ class WINDECLSPEC PacketHandler
   /// @return COMM_NOT_AVAILABLE
   ////////////////////////////////////////////////////////////////////////////////
   virtual int reboot          (PortHandler *port, uint8_t id, uint8_t *error = 0) = 0;
-  
+
   ////////////////////////////////////////////////////////////////////////////////
-  /// @brief The function that makes Dynamixel clear multi turn
+  /// @brief The function that reset multi-turn revolution information of Dynamixel
   /// @description The function makes an instruction packet with INST_CLEAR,
-  /// @description transmits the packet with Protocol2PacketHandler::txRxPacket(),
-  /// @description then Dynamixel rotate multi turn,
-  /// @description and reset position value when pressing space key.
+  /// @description transmits the packet with PacketHandler::txRxPacket().
+  /// @description Applied Products : MX with Protocol 2.0 (Firmware v42 or above),
+  /// @description Dynamixel X-series (Firmware v42 or above).
   /// @param port PortHandler instance
   /// @param id Dynamixel ID
   /// @param error Dynamixel hardware error
-  /// @return COMM_NOT_AVAILABLE
+  /// @return communication results which come from PacketHandler::txRxPacket()
   ////////////////////////////////////////////////////////////////////////////////
-  virtual int clearMultiTurn          (PortHandler *port, uint8_t id, uint8_t *error = 0);
+  virtual int clearMultiTurn  (PortHandler *port, uint8_t id, uint8_t *error = 0) = 0;
 
   ////////////////////////////////////////////////////////////////////////////////
   /// @brief The function that makes Dynamixel reset as it was produced in the factory

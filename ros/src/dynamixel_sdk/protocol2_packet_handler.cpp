@@ -621,12 +621,11 @@ int Protocol2PacketHandler::clearMultiTurn(PortHandler *port, uint8_t id, uint8_
   txpacket[PKT_LENGTH_L]      = 8;
   txpacket[PKT_LENGTH_H]      = 0;
   txpacket[PKT_INSTRUCTION]   = INST_CLEAR;
-  txpacket[PKT_PARAMETER0+0]  = 0x01;
+  txpacket[PKT_PARAMETER0]    = 0x01;
   txpacket[PKT_PARAMETER0+1]  = 0x44;
   txpacket[PKT_PARAMETER0+2]  = 0x58;
   txpacket[PKT_PARAMETER0+3]  = 0x4C;
   txpacket[PKT_PARAMETER0+4]  = 0x22;
-
 
   return txRxPacket(port, txpacket, rxpacket, error);
 }
