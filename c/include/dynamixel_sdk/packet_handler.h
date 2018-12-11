@@ -47,6 +47,7 @@
 #define INST_BULK_READ      146     // 0x92
 // --- Only for 2.0 --- //
 #define INST_REBOOT         8
+#define INST_CLEAR          16      // 0x10
 #define INST_STATUS         85      // 0x55
 #define INST_SYNC_READ      130     // 0x82
 #define INST_BULK_WRITE     147     // 0x93
@@ -101,6 +102,8 @@ WINDECLSPEC void        broadcastPing       (int port_num, int protocol_version)
 WINDECLSPEC uint8_t     getBroadcastPingResult  (int port_num, int protocol_version, int id);
 
 WINDECLSPEC void        reboot              (int port_num, int protocol_version, uint8_t id);
+
+WINDECLSPEC void        clearMultiTurn      (int port_num, int protocol_version, uint8_t id);
 
 WINDECLSPEC void        factoryReset        (int port_num, int protocol_version, uint8_t id, uint8_t option);
 

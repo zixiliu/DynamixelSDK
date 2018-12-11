@@ -488,7 +488,7 @@ int main(int argc, char *argv[])
         printf("Detected Dynamixel : \n");
         for (id = 0; id < MAX_ID; id++)
         {
-          if (getBroadcastPingResult(port_num, id, PROTOCOL_VERSION2))
+          if (getBroadcastPingResult(port_num, PROTOCOL_VERSION2, id))
             printf("[ID:%03d]\n", id);
         }
         printf("\n");
