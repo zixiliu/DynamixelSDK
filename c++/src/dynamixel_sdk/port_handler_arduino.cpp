@@ -91,18 +91,16 @@ void PortHandlerArduino::closePort()
 
 void PortHandlerArduino::clearPort()
 {
+  int temp __attribute__((unused));
 #if defined(__OPENCR__)
-  DYNAMIXEL_SERIAL.flush();
-  // Clear out all data from the input queue. 
-  while (DYNAMIXEL_SERIAL.available())
+  while (DYNAMIXEL_SERIAL.available()) 
   {
-    DYNAMIXEL_SERIAL.read();
+      temp = DYNAMIXEL_SERIAL.read();
   }
 #elif defined(__OPENCM904__)
-  p_dxl_serial->flush();
-  while (p_dxl_serial->available())
+  while (p_dxl_serial->available()) 
   {
-    p_dxl_serial->read();
+      temp = p_dxl_serial->read();
   }
 #endif
 }
