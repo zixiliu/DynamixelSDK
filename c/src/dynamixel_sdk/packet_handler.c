@@ -223,6 +223,18 @@ void reboot(int port_num, int protocol_version, uint8_t id)
   }
 }
 
+void clearMultiTurn(int port_num, int protocol_version, uint8_t id)
+{
+  if (protocol_version == 1)
+  {
+    clearMultiTurn1(port_num, id);
+  }
+  else
+  {
+    clearMultiTurn2(port_num, id);
+  }
+}
+
 void factoryReset(int port_num, int protocol_version, uint8_t id, uint8_t option)
 {
   if (protocol_version == 1)
