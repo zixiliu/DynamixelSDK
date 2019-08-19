@@ -6,8 +6,8 @@ Changelog for package dynamixel_sdk
 -------------------
 - Updated C lib and DLL file
 - Changed C# / win32 / protocol_combined output path
-- fixed "protocol_combined" example bug
-- fixed typo in bulk_read_write.py
+- Fixed "protocol_combined" example bug
+- Fixed typo in bulk_read_write.py
 * Contributors: Pyo, Zerom
 
 3.7.10 (2019-08-19)
