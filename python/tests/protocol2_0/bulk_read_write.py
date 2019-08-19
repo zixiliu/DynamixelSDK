@@ -124,7 +124,7 @@ elif dxl_error != 0:
 else:
     print("Dynamixel#%d has been successfully connected" % DXL1_ID)
 
-# Enable Dynamixel#1 Torque
+# Enable Dynamixel#2 Torque
 dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL2_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_ENABLE)
 if dxl_comm_result != COMM_SUCCESS:
     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
