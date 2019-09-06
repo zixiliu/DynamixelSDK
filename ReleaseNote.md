@@ -1,15 +1,16 @@
 # Dynamixel SDK Release Notes
 
+3.7.21 (2019-09-06)
+-------------------
+* Fixed buffer overflow bug (rxpacket size)
+* Fixed typo in the package.xml and header files
+
 3.7.11 (2019-08-19)
 -------------------
-- Updated C lib and DLL file
-- Changed C# / win32 / protocol_combined output path
-- Fixed "protocol_combined" example bug
-- Fixed typo in bulk_read_write.py
-
-3.7.10 (2019-08-19)
--------------------
-- Supported ROS 2 Dashing Diademata
+* Updated C lib and DLL file
+* Changed C# / win32 / protocol_combined output path
+* Fixed "protocol_combined" example bug
+* Fixed typo in bulk_read_write.py
 
 3.7.0 (2019-01-03)
 ------------------
