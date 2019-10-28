@@ -16,8 +16,12 @@
 
 /* Author: Ryu Woon Jung (Leon) */
 
-#if defined(__linux__)
 #include "port_handler.h"
+
+int g_used_port_num = 0;
+uint8_t *g_is_using;
+
+#if defined(__linux__)
 #include "port_handler_linux.h"
 
 int     portHandler         (const char *port_name) { return portHandlerLinux(port_name); }
@@ -42,7 +46,6 @@ void    setPacketTimeoutMSec(int port_num, double msec) { setPacketTimeoutMSecLi
 uint8_t isPacketTimeout     (int port_num) { return isPacketTimeoutLinux(port_num); }
 
 #elif defined(__APPLE__)
-#include "port_handler.h"
 #include "port_handler_mac.h"
 
 int     portHandler         (const char *port_name) { return portHandlerMac(port_name); }
@@ -68,7 +71,6 @@ uint8_t isPacketTimeout     (int port_num) { return isPacketTimeoutMac(port_num)
 
 #elif defined(_WIN32) || defined(_WIN64)
 #define WINDLLEXPORT
-#include "port_handler.h"
 #include "port_handler_windows.h"
 
 int     portHandler         (const char *port_name) { return portHandlerWindows(port_name); }
