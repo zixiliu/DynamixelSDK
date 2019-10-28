@@ -23,6 +23,8 @@
 #elif defined(_WIN32) || defined(_WIN64)
 #define WINDLLEXPORT
 #include "protocol1_packet_handler.h"
+#elif defined(__USE_CMSIS)
+#include "protocol1_packet_handler.h"
 #endif
 
 #include <string.h>

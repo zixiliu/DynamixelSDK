@@ -26,6 +26,8 @@
 #elif defined(_WIN32) || defined(_WIN64)
 #define WINDLLEXPORT
 #include "group_bulk_read.h"
+#elif defined(__USE_CMSIS)
+#include "group_bulk_read.h"
 #endif
 
 typedef struct

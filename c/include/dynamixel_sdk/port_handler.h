@@ -29,6 +29,8 @@
   #else
   #define WINDECLSPEC __declspec(dllimport)
   #endif
+#elif defined(__USE_CMSIS)
+#define WINDECLSPEC
 #endif
 
 #ifdef __GNUC__
