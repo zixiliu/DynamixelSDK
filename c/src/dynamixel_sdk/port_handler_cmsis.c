@@ -108,7 +108,7 @@ int portHandlerCMSIS(const char *port_name)
       return -1;
 
   g_is_using[port_num] = False;
-  return 0;
+  return port_num;
 }
 
 uint8_t openPortCMSIS(int port_num)
