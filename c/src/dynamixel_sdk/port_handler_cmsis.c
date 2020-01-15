@@ -177,6 +177,9 @@ int getBaudRateCMSIS(int port_num)
 
 int readPortCMSIS(int port_num, uint8_t *packet, int length)
 {
+  if(!packet || length == 0)
+      return 0;
+
   if (!portData[port_num].rx_busy)
   {
     // Start receive
@@ -195,6 +198,9 @@ int readPortCMSIS(int port_num, uint8_t *packet, int length)
 
 int writePortCMSIS(int port_num, uint8_t *packet, int length)
 {
+  if(!packet || length == 0)
+      return 0;
+
   enableTransmitCMSIS();
   portData[port_num].driver->Send(packet, length);
 
