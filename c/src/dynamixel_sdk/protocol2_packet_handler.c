@@ -810,6 +810,8 @@ void readTx2(int port_num, uint8_t id, uint16_t address, uint16_t length)
 
   txPacket2(port_num);
 
+  free(packetData[port_num].tx_packet);
+
   // set packet timeout
   if (packetData[port_num].communication_result == COMM_SUCCESS)
     setPacketTimeout(port_num, (uint16_t)(length + 11));
