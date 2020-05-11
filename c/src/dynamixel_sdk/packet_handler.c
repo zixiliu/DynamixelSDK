@@ -211,7 +211,11 @@ uint8_t getBroadcastPingResult(int port_num, int protocol_version, int id)
   }
 }
 
+#if defined(__APPLE__)
+void rebootDXL(int port_num, int protocol_version, uint8_t id)
+#else
 void reboot(int port_num, int protocol_version, uint8_t id)
+#endif
 {
   if (protocol_version == 1)
   {
@@ -220,6 +224,18 @@ void reboot(int port_num, int protocol_version, uint8_t id)
   else
   {
     reboot2(port_num, id);
+  }
+}
+
+void clearMultiTurn(int port_num, int protocol_version, uint8_t id)
+{
+  if (protocol_version == 1)
+  {
+    clearMultiTurn1(port_num, id);
+  }
+  else
+  {
+    clearMultiTurn2(port_num, id);
   }
 }
 

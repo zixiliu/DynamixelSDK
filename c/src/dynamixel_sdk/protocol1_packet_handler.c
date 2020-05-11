@@ -418,6 +418,11 @@ void reboot1(int port_num, uint8_t id)
   packetData[port_num].communication_result = COMM_NOT_AVAILABLE;
 }
 
+void clearMultiTurn1(int port_num, uint8_t id)
+{
+  packetData[port_num].communication_result = COMM_NOT_AVAILABLE;
+}
+
 void factoryReset1(int port_num, uint8_t id, uint8_t option)
 {
   packetData[port_num].tx_packet = (uint8_t *)realloc(packetData[port_num].tx_packet, 6);
