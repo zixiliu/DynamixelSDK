@@ -4,7 +4,7 @@ import platform
 
 setup(
     name='dynamixel_sdk',
-    version='3.6.0',
+    version='3.7.21',
     packages=['dynamixel_sdk'],
     package_dir={'': 'src'},
     license='Apache 2.0',
