@@ -2,6 +2,11 @@
 Changelog for package dynamixel_sdk
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+3.7.3 (2020-07-13)
+-------------------
+* ROS 1 Noetic Ninjemys support
+* Contributors: Will Son
+
 3.7.21 (2019-09-06)
 -------------------
 * Fixed buffer overflow bug (rxpacket size)
