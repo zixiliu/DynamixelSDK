@@ -1,5 +1,12 @@
 # Dynamixel SDK Release Notes
 
+<<<<<<< HEAD
+=======
+3.7.3 (2020-07-13)
+-------------------
+* ROS 1 Noetic Ninjemys support
+
+>>>>>>> master
 3.7.21 (2019-09-06)
 -------------------
 * Fixed buffer overflow bug (rxpacket size)
