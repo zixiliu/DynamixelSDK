@@ -2,7 +2,7 @@
 Changelog for package dynamixel_sdk
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-3.7.3 (2020-07-13)
+3.7.31 (2020-07-13)
 -------------------
 * ROS 1 Noetic Ninjemys support
 * 3x faster getError member function of GroupSyncRead Class
