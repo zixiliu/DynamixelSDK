@@ -1,8 +1,10 @@
 # Dynamixel SDK Release Notes
 
-3.7.3 (2020-07-13)
+3.7.31 (2020-07-13)
 -------------------
 * ROS 1 Noetic Ninjemys support
+* 3x faster getError member function of GroupSyncRead Class
+* Contributors: developer0hye, Zerom, Will Son
 
 3.7.21 (2019-09-06)
 -------------------
