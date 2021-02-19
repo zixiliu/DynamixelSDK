@@ -111,7 +111,7 @@ PROTOCOL_VERSION            = 2.0;
 DXL_ID                      = 1; 
 
 % Use the actual port assigned to the U2D2. 
-% ex) Windows: "COM*", Linux: "/dev/ttyUSB*", Mac: "/dev/tty.usbserial-*" 
+% ex) Windows: 'COM*', Linux: '/dev/ttyUSB*', Mac: '/dev/tty.usbserial-*' 
 DEVICENAME                  = '/dev/ttyUSB0';       
 
 % Common Control Table Address and Data 
@@ -165,7 +165,7 @@ end
 
 
 % Enable Dynamixel Torque
-write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_ENABLE);
+write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE);
 dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
 dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
 if dxl_comm_result ~= COMM_SUCCESS
@@ -183,7 +183,7 @@ while 1
     end
 
     % Write goal position
-    write4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_GOAL_POSITION, typecast(int32(dxl_goal_position(index)), 'uint32'));
+    write4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_GOAL_POSITION, typecast(int32(dxl_goal_position(index)), 'uint32'));
     dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
     dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
     if dxl_comm_result ~= COMM_SUCCESS
@@ -194,7 +194,7 @@ while 1
 
     while 1
         % Read present position
-        dxl_present_position = read4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_PRESENT_POSITION);
+        dxl_present_position = read4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRESENT_POSITION);
         dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
         dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
         if dxl_comm_result ~= COMM_SUCCESS
@@ -220,7 +220,7 @@ end
 
 
 % Disable Dynamixel Torque
-write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_DISABLE);
+write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE);
 dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
 dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
 if dxl_comm_result ~= COMM_SUCCESS
