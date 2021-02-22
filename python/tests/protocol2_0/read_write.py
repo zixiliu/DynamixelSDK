@@ -24,7 +24,7 @@
 #    - Protocol 2.0 supported DYNAMIXEL(X, P, PRO/PRO(A), MX 2.0 series)
 #    - DYNAMIXEL Starter Set (U2D2, U2D2 PHB, 12V SMPS)
 #  How to use the example :
-#    - Use proper DYNAMIXEL Model definition from line #44
+#    - Use proper DYNAMIXEL Model definition from line #57
 #    - Build and Run from proper architecture subdirectory.
 #    - For ARM based SBCs such as Raspberry Pi, use linux_sbc subdirectory to build and run.
 #    - https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_sdk/overview/

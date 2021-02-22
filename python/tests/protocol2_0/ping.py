@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-################################################################################
+#*******************************************************************************
 # Copyright 2017 ROBOTIS CO., LTD.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,19 +15,22 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-################################################################################
+#*******************************************************************************
 
-# Author: Ryu Woon Jung (Leon)
 
-#
-# *********     ping Example      *********
-#
-#
-# Available Dynamixel model on this example : All models using Protocol 2.0
-# This example is designed for using a Dynamixel PRO 54-200, and an USB2DYNAMIXEL.
-# To use another Dynamixel model, such as X series, see their details in E-Manual(emanual.robotis.com) and edit below variables yourself.
-# Be sure that Dynamixel PRO properties are already set as %% ID : 1 / Baudnum : 1 (Baudrate : 57600)
-#
+#*******************************************************************************
+#***********************     Read and Write Example      ***********************
+#  Required Environment to run this example :
+#    - Protocol 2.0 supported DYNAMIXEL(X, P, PRO/PRO(A), MX 2.0 series)
+#    - DYNAMIXEL Starter Set (U2D2, U2D2 PHB, 12V SMPS)
+#  How to use the example :
+#    - Use proper DYNAMIXEL Model definition from line #57
+#    - Build and Run from proper architecture subdirectory.
+#    - For ARM based SBCs such as Raspberry Pi, use linux_sbc subdirectory to build and run.
+#    - https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_sdk/overview/
+#  Author: Ryu Woon Jung (Leon)
+#  Maintainer : Zerom, Will Son
+# *******************************************************************************
 
 import os
 
@@ -49,14 +52,35 @@ else:
 
 from dynamixel_sdk import *                 # Uses Dynamixel SDK library
 
-# Protocol version
-PROTOCOL_VERSION        = 2.0               # See which protocol version is used in the Dynamixel
+#********* DYNAMIXEL Model definition *********
+#***** (Use only one definition at a time) *****
+MY_DXL = 'X_SERIES'       # X330, X430, X540, 2X430
+# MY_DXL = 'PRO_SERIES'   # H54, H42, M54, M42, L54, L42
+# MY_DXL = 'PRO_A_SERIES' # PRO series with (A) firmware update.
+# MY_DXL = 'P_SERIES'     # PH54, PH42, PM54
+# MY_DXL = 'XL320'        # [WARNING] Operating Voltage : 7.4V
+# MY_DXL = 'XL320'        # MX series with 2.0 firmware update.
 
-# Default setting
-DXL_ID                  = 1                 # Dynamixel ID : 1
-BAUDRATE                = 57600             # Dynamixel default baudrate : 57600
-DEVICENAME              = '/dev/ttyUSB0'    # Check which port is being used on your controller
-                                            # ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
+# Control table address
+if MY_DXL == 'X_SERIES' or MY_DXL == 'MX_SERIES': 
+    BAUDRATE                    = 57600
+elif MY_DXL == 'PRO_SERIES':
+    BAUDRATE                    = 57600
+elif MY_DXL == 'P_SERIES' or MY_DXL == 'PRO_A_SERIES':
+    BAUDRATE                    = 57600
+elif MY_DXL == 'XL320':
+    BAUDRATE                    = 1000000   # Default Baudrate of XL-320 is 1Mbps
+
+# DYNAMIXEL Protocol Version (1.0 / 2.0)
+# https://emanual.robotis.com/docs/en/dxl/protocol2/
+PROTOCOL_VERSION            = 2.0               
+
+# Factory default ID of all DYNAMIXEL is 1
+DXL_ID                      = 1
+
+# Use the actual port assigned to the U2D2.
+# ex) Windows: "COM*", Linux: "/dev/ttyUSB*", Mac: "/dev/tty.usbserial-*"
+DEVICENAME                  = '/dev/ttyUSB0'    
 
 # Initialize PortHandler instance
 # Set the port path
