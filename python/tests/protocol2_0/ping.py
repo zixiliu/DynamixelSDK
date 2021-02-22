@@ -19,7 +19,7 @@
 
 
 #*******************************************************************************
-#***********************     Read and Write Example      ***********************
+#***********************     Ping Example      ***********************
 #  Required Environment to run this example :
 #    - Protocol 2.0 supported DYNAMIXEL(X, P, PRO/PRO(A), MX 2.0 series)
 #    - DYNAMIXEL Starter Set (U2D2, U2D2 PHB, 12V SMPS)
