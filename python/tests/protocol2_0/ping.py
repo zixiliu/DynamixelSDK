@@ -55,14 +55,15 @@ from dynamixel_sdk import *                 # Uses Dynamixel SDK library
 #********* DYNAMIXEL Model definition *********
 #***** (Use only one definition at a time) *****
 MY_DXL = 'X_SERIES'       # X330, X430, X540, 2X430
+# MY_DXL = 'MX_SERIES'    # MX series with 2.0 firmware update.
 # MY_DXL = 'PRO_SERIES'   # H54, H42, M54, M42, L54, L42
 # MY_DXL = 'PRO_A_SERIES' # PRO series with (A) firmware update.
 # MY_DXL = 'P_SERIES'     # PH54, PH42, PM54
 # MY_DXL = 'XL320'        # [WARNING] Operating Voltage : 7.4V
-# MY_DXL = 'XL320'        # MX series with 2.0 firmware update.
+
 
 # Control table address
-if MY_DXL == 'X_SERIES' or MY_DXL == 'MX_SERIES': 
+if MY_DXL == 'X_SERIES' or MY_DXL == 'MX_SERIES':
     BAUDRATE                    = 57600
 elif MY_DXL == 'PRO_SERIES':
     BAUDRATE                    = 57600
@@ -73,14 +74,14 @@ elif MY_DXL == 'XL320':
 
 # DYNAMIXEL Protocol Version (1.0 / 2.0)
 # https://emanual.robotis.com/docs/en/dxl/protocol2/
-PROTOCOL_VERSION            = 2.0               
+PROTOCOL_VERSION            = 2.0
 
 # Factory default ID of all DYNAMIXEL is 1
 DXL_ID                      = 1
 
 # Use the actual port assigned to the U2D2.
 # ex) Windows: "COM*", Linux: "/dev/ttyUSB*", Mac: "/dev/tty.usbserial-*"
-DEVICENAME                  = '/dev/ttyUSB0'    
+DEVICENAME                  = '/dev/ttyUSB0'
 
 # Initialize PortHandler instance
 # Set the port path
