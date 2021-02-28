@@ -17,17 +17,20 @@
 # limitations under the License.
 ################################################################################
 
-# Author: Ki Jong Gil (Gilbert)
-
-#
-# *********     Clear Multi Turn Example      *********
-#
-#
-# Available Dynamixel model on this example : All models using Protocol 2.0
-# This example is designed for using a Dynamixel PRO 54-200, and an USB2DYNAMIXEL.
-# To use another Dynamixel model, such as X series, see their details in E-Manual(emanual.robotis.com) and edit below variables yourself.
-# Be sure that Dynamixel PRO properties are already set as %% ID : 1 / Baudnum : 1 (Baudrate : 57600)
-#
+#*******************************************************************************
+#***********************     Clear Multi Turn Example [Extended Position Control Mode]   ***********************
+#  Required Environment to run this example :
+#    - Protocol 2.0 supported DYNAMIXEL(X, P, PRO/PRO(A), MX 2.0 series)
+#    - DYNAMIXEL Starter Set (U2D2, U2D2 PHB, 12V SMPS)
+#  How to use the example :
+#    - Use proper DYNAMIXEL Model definition from line #77
+#    - Note that the XL320 does support Extended Position Control Mode
+#    - Build and Run from proper architecture subdirectory.
+#    - For ARM based SBCs such as Raspberry Pi, use linux_sbc subdirectory to build and run.
+#    - https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_sdk/overview/
+#  Author: Ki Jong Gil (Gilbert)
+#  Maintainer : Zerom, Will Son
+# ****
 
 from __future__ import print_function
 import os
@@ -71,7 +74,7 @@ from dynamixel_sdk import *                    # Uses Dynamixel SDK library
 
 #********* DYNAMIXEL Model definition *********
 #***** (Use only one definition at a time) *****
-MY_DXL = 'X_SERIES'       # X330, X430, X540, 2X430 (Note that XL320 does not support Multi-turn mode)
+MY_DXL = 'X_SERIES'       # X330, X430, X540, 2X430 (Note that XL320 does not support Extended Position Control Mode)
 # MY_DXL = 'MX_SERIES'    # MX series with 2.0 firmware update.
 # MY_DXL = 'PRO_SERIES'   # H54, H42, M54, M42, L54, L42
 # MY_DXL = 'PRO_A_SERIES' # PRO series with (A) firmware update.
@@ -83,7 +86,7 @@ if MY_DXL == 'X_SERIES' or MY_DXL == 'MX_SERIES':
     ADDR_GOAL_POSITION          = 116
     ADDR_PRESENT_POSITION       = 132
 elif MY_DXL == 'PRO_SERIES':
-    ADDR_TORQUE_ENABLE          = 562       # Control table address is different in DYNAMIXEL model
+    ADDR_TORQUE_ENABLE          = 562        # Control table address is different in DYNAMIXEL model
     ADDR_GOAL_POSITION          = 596
     ADDR_PRESENT_POSITION       = 611
 elif MY_DXL == 'P_SERIES' or MY_DXL == 'PRO_A_SERIES':
@@ -94,7 +97,7 @@ elif MY_DXL == 'P_SERIES' or MY_DXL == 'PRO_A_SERIES':
 ADDR_OPERATING_MODE         = 11
 
 # Protocol version
-PROTOCOL_VERSION            = 2.0               # See which protocol version is used in the Dynamixel
+PROTOCOL_VERSION            = 2.0            # See which protocol version is used in the Dynamixel
 
 # Factory default ID of all DYNAMIXEL is 1
 DXL_ID                      = 1
