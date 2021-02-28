@@ -92,11 +92,6 @@ elif MY_DXL == 'XL320':
     DXL_MAXIMUM_POSITION_VALUE  = 1023      # Refer to the CCW Angle Limit of product eManual
     BAUDRATE                    = 1000000   # Default Baudrate of XL-320 is 1Mbps
 
-# Control table address
-ADDR_TORQUE_ENABLE      = 64               # Control table address is different in Dynamixel model
-ADDR_GOAL_POSITION      = 116
-ADDR_PRESENT_POSITION   = 132
-
 # Protocol version
 PROTOCOL_VERSION            = 2.0               #  See which protocol version is used in the Dynamixel
 
@@ -108,13 +103,10 @@ DEVICENAME2                 = '/dev/ttyUSB1'    # ex) Windows: "COM1"   Linux: "
 
 TORQUE_ENABLE               = 1                 # Value for enabling the torque
 TORQUE_DISABLE              = 0                 # Value for disabling the torque
-DXL_MINIMUM_POSITION_VALUE  = 100               # Dynamixel will rotate between this value
-DXL_MAXIMUM_POSITION_VALUE  = 4000              # and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
 DXL_MOVING_STATUS_THRESHOLD = 20                # Dynamixel moving status threshold
 
 index = 0
 dxl_goal_position = [DXL_MINIMUM_POSITION_VALUE, DXL_MAXIMUM_POSITION_VALUE]         # Goal position
-
 
 # Initialize PortHandler instance
 # Set the port path
