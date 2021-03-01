@@ -23,7 +23,7 @@
 #    - Protocol 2.0 supported DYNAMIXEL(X, P, PRO/PRO(A), MX 2.0 series)
 #    - DYNAMIXEL Starter Set (U2D2, U2D2 PHB, 12V SMPS)
 #  How to use the example :
-#    - Use proper DYNAMIXEL Model definition from line #77
+#    - Select the DYNAMIXEL in use at the MY_DXL in the example code. 
 #    - Note that the XL320 does support Extended Position Control Mode
 #    - Build and Run from proper architecture subdirectory.
 #    - For ARM based SBCs such as Raspberry Pi, use linux_sbc subdirectory to build and run.
