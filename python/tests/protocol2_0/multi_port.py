@@ -25,7 +25,7 @@
 #    - Protocol 2.0 supported DYNAMIXEL(X, P, PRO/PRO(A), MX 2.0 series)
 #    - DYNAMIXEL Starter Set (U2D2, U2D2 PHB, 12V SMPS)
 #  How to use the example :
-#    - Select the DYNAMIXEL in use at the MY_DXL in the example code. 
+#    - Select the DYNAMIXEL in use at the MY_DXL in the example code.
 #    - Build and Run from proper architecture subdirectory.
 #    - For ARM based SBCs such as Raspberry Pi, use linux_sbc subdirectory to build and run.
 #    - https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_sdk/overview/
@@ -179,14 +179,20 @@ while 1:
         break
 
     # Write Dynamixel#1 goal position
-    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler1, DXL1_ID, ADDR_GOAL_POSITION, dxl_goal_position[index])
+    if (MY_DXL == 'XL320'): # XL320 uses 2 byte Position Data, Check the size of data in your DYNAMIXEL's control table
+        dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler1, DXL1_ID, ADDR_GOAL_POSITION, dxl_goal_position[index])
+    else:
+        dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler1, DXL1_ID, ADDR_GOAL_POSITION, dxl_goal_position[index])
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
 
     # Write Dynamixel#2 goal position
-    dxl_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler2, DXL2_ID, ADDR_GOAL_POSITION, dxl_goal_position[index])
+    if (MY_DXL == 'XL320'): # XL320 uses 2 byte Position Data, Check the size of data in your DYNAMIXEL's control table
+        dxl2_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler2, DXL2_ID, ADDR_GOAL_POSITION, dxl_goal_position[index])
+    else:
+        dxl2_comm_result, dxl_error = packetHandler.write4ByteTxRx(portHandler2, DXL2_ID, ADDR_GOAL_POSITION, dxl_goal_position[index])
     if dxl_comm_result != COMM_SUCCESS:
         print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
     elif dxl_error != 0:
@@ -195,14 +201,20 @@ while 1:
 
     while 1:
         # Read Dynamixel#1 present position
-        dxl1_present_position, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler1, DXL1_ID, ADDR_PRESENT_POSITION)
+        if (MY_DXL == 'XL320'): # XL320 uses 2 byte Position Data, Check the size of data in your DYNAMIXEL's control table
+            dxl1_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler1, DXL1_ID, ADDR_PRESENT_POSITION)
+        else:
+            dxl1_present_position, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler1, DXL1_ID, ADDR_PRESENT_POSITION)
         if dxl_comm_result != COMM_SUCCESS:
             print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
             print("%s" % packetHandler.getRxPacketError(dxl_error))
 
         # Read Dynamixel#2 present position
-        dxl2_present_position, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler2, DXL2_ID, ADDR_PRESENT_POSITION)
+        if (MY_DXL == 'XL320'): # XL320 uses 2 byte Position Data, Check the size of data in your DYNAMIXEL's control table
+            dxl2_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler2, DXL2_ID, ADDR_PRESENT_POSITION)
+        else:
+            dxl2_present_position, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler2, DXL2_ID, ADDR_PRESENT_POSITION)
         if dxl_comm_result != COMM_SUCCESS:
             print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
