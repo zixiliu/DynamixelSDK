@@ -59,7 +59,7 @@ PROTOCOL_VERSION            = 2.0
 # Factory default ID of all DYNAMIXEL is 1
 DXL_ID                      = 1
 
-# Dynamixel default baudrate : 57600. It may differ depending on your DYNAMIXEL in use. Go to e-Manual for more information on the your DYNAMIXELs.
+# Define the proper baudrate to search DYNAMIXELs. Note that XL320's baudrate is 1 M bps.
 BAUDRATE                = 57600
 
 # Use the actual port assigned to the U2D2.

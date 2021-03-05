@@ -20,7 +20,7 @@
 #*******************************************************************************
 #***********************     Bulk Read and Bulk Write Example      ***********************
 #  Required Environment to run this example :
-#    - Protocol 2.0 supported DYNAMIXEL(X, P, PRO/PRO(A), MX 2.0 series)
+#    - Protocol 2.0 supported DYNAMIXEL(X, P, PRO/PRO(A), MX 2.0 series). Note that the XL320 does not support Bulk Read and Bulk Write. 
 #    - DYNAMIXEL Starter Set (U2D2, U2D2 PHB, 12V SMPS)
 #  How to use the example :
 #    - Select the DYNAMIXEL in use at the MY_DXL in the example code. 
@@ -54,12 +54,11 @@ from dynamixel_sdk import *                    # Uses Dynamixel SDK library
 
 #********* DYNAMIXEL Model definition *********
 #***** (Use only one definition at a time) *****
-MY_DXL = 'X_SERIES'       # X330, X430, X540, 2X430
+MY_DXL = 'X_SERIES'       # X330 (5.0 V recommended), X430, X540, 2X430
 # MY_DXL = 'MX_SERIES'    # MX series with 2.0 firmware update.
 # MY_DXL = 'PRO_SERIES'   # H54, H42, M54, M42, L54, L42
 # MY_DXL = 'PRO_A_SERIES' # PRO series with (A) firmware update.
 # MY_DXL = 'P_SERIES'     # PH54, PH42, PM54
-# MY_DXL = 'XL320'        # [WARNING] Operating Voltage : 7.4V
 
 # Control table address
 if MY_DXL == 'X_SERIES' or MY_DXL == 'MX_SERIES':
@@ -95,17 +94,6 @@ elif MY_DXL == 'P_SERIES' or MY_DXL == 'PRO_A_SERIES':
     DXL_MINIMUM_POSITION_VALUE  = -150000   # Refer to the Minimum Position Limit of product eManual
     DXL_MAXIMUM_POSITION_VALUE  = 150000    # Refer to the Maximum Position Limit of product eManual
     BAUDRATE                    = 57600
-elif MY_DXL == 'XL320':
-    ADDR_TORQUE_ENABLE          = 24
-    ADDR_LED_RED                = 25
-    LEN_LED_RED                 = 1        # Data Byte Length
-    ADDR_GOAL_POSITION          = 30
-    LEN_GOAL_POSITION           = 2        # Data Byte Length
-    ADDR_PRESENT_POSITION       = 37
-    LEN_PRESENT_POSITION        = 2        # Data Byte Length
-    DXL_MINIMUM_POSITION_VALUE  = 0        # Refer to the CW Angle Limit of product eManual
-    DXL_MAXIMUM_POSITION_VALUE  = 1023     # Refer to the CCW Angle Limit of product eManual
-    BAUDRATE                    = 1000000  # Default Baudrate of XL-320 is 1Mbps
 
 # DYNAMIXEL Protocol Version (1.0 / 2.0)
 # https://emanual.robotis.com/docs/en/dxl/protocol2/

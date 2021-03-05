@@ -55,7 +55,7 @@ from dynamixel_sdk import *                 # Uses Dynamixel SDK library
 # https://emanual.robotis.com/docs/en/dxl/protocol2/
 PROTOCOL_VERSION            = 2.0         
 
-# Define the proper baudrate to search DYNAMIXELs. Note that XL320's baudrate is 1 M bps, otherwise 57600.
+# Define the proper baudrate to search DYNAMIXELs. Note that XL320's baudrate is 1 M bps.
 BAUDRATE                = 57600  
 
 # Use the actual port assigned to the U2D2.

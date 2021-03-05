@@ -54,7 +54,7 @@ from dynamixel_sdk import *                    # Uses Dynamixel SDK library
 
 #********* DYNAMIXEL Model definition *********
 #***** (Use only one definition at a time) *****
-MY_DXL = 'X_SERIES'       # X330, X430, X540, 2X430
+MY_DXL = 'X_SERIES'       # X330 (5.0 V recommended), X430, X540, 2X430
 # MY_DXL = 'MX_SERIES'    # MX series with 2.0 firmware update.
 # MY_DXL = 'PRO_SERIES'   # H54, H42, M54, M42, L54, L42
 # MY_DXL = 'PRO_A_SERIES' # PRO series with (A) firmware update.
@@ -89,15 +89,6 @@ elif MY_DXL == 'P_SERIES' or MY_DXL == 'PRO_A_SERIES':
     DXL_MINIMUM_POSITION_VALUE  = -150000    # Refer to the Minimum Position Limit of product eManual
     DXL_MAXIMUM_POSITION_VALUE  = 150000     # Refer to the Maximum Position Limit of product eManual
     BAUDRATE                    = 57600
-elif MY_DXL == 'XL320':
-    ADDR_TORQUE_ENABLE          = 24
-    ADDR_GOAL_POSITION          = 30
-    LEN_GOAL_POSITION           = 2         # Data Byte Length
-    ADDR_PRESENT_POSITION       = 37
-    LEN_PRESENT_POSITION        = 2         # Data Byte Length
-    DXL_MINIMUM_POSITION_VALUE  = 0         # Refer to the CW Angle Limit of product eManual
-    DXL_MAXIMUM_POSITION_VALUE  = 1023      # Refer to the CCW Angle Limit of product eManual
-    BAUDRATE                    = 1000000   # Default Baudrate of XL-320 is 1Mbps
 
 # DYNAMIXEL Protocol Version (1.0 / 2.0)
 # https://emanual.robotis.com/docs/en/dxl/protocol2/
