@@ -73,11 +73,7 @@ bool getPresentPosition(
   // Read Present Position (length : 4 bytes) and Convert uint32 -> int32
   // When reading 2 byte data from AX / MX(1.0), use read2ByteTxRx() instead.
   dxl_comm_result = packetHandler->read4ByteTxRx(
-    portHandler,
-    (uint8_t)req.id,
-    ADDR_PRESENT_POSITION,
-    (uint32_t *)&pos,
-    &dxl_error);
+    portHandler, (uint8_t)req.id, ADDR_PRESENT_POSITION, (uint32_t *)&pos, &dxl_error);
   if (dxl_comm_result == COMM_SUCCESS) {
     ROS_INFO("getPosition : [ID:%d] -> [POSITION:%d]", req.id, pos);
     res.position = pos;
@@ -99,11 +95,7 @@ void setPositionCallback(const dynamixel_sdk_examples::SetPosition::ConstPtr & m
   // Write Goal Position (length : 4 bytes)
   // When writing 2 byte data to AX / MX(1.0), use write2ByteTxRx() instead.
   dxl_comm_result = packetHandler->write4ByteTxRx(
-    portHandler,
-    (uint8_t)msg->id,
-    ADDR_GOAL_POSITION,
-    pos,
-    &dxl_error);
+    portHandler, (uint8_t)msg->id, ADDR_GOAL_POSITION, pos, &dxl_error);
   if (dxl_comm_result == COMM_SUCCESS) {
     ROS_INFO("setPosition : [ID:%d] [POSITION:%d]", msg->id, msg->position);
   } else {
@@ -136,16 +128,14 @@ int main(int argc, char ** argv)
   ros::ServiceServer get_position_srv = nh.advertiseService("/get_position", getPresentPosition);
 
   dxl_comm_result = packetHandler->write1ByteTxRx(
-    portHandler, DXL1_ID, ADDR_TORQUE_ENABLE, 1,
-    &dxl_error);
+    portHandler, DXL1_ID, ADDR_TORQUE_ENABLE, 1, &dxl_error);
   if (dxl_comm_result != COMM_SUCCESS) {
     ROS_ERROR_STREAM("Failed to enable torque for Dynamixel ID 1! Result: " << dxl_comm_result);
     return -1;
   }
 
   dxl_comm_result = packetHandler->write1ByteTxRx(
-    portHandler, DXL2_ID, ADDR_TORQUE_ENABLE, 1,
-    &dxl_error);
+    portHandler, DXL2_ID, ADDR_TORQUE_ENABLE, 1, &dxl_error);
   if (dxl_comm_result != COMM_SUCCESS) {
     ROS_ERROR_STREAM("Failed to enable torque for Dynamixel ID 2! Result: " << dxl_comm_result);
     return -1;
