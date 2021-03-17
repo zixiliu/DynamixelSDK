@@ -60,7 +60,7 @@ using namespace dynamixel;
 PortHandler * portHandler;
 PacketHandler * packetHandler;
 
-bool getPresentPosition(
+bool getPresentPositionCallback(
   dynamixel_sdk_examples::GetPosition::Request & req,
   dynamixel_sdk_examples::GetPosition::Response & res)
 {
@@ -108,9 +108,6 @@ int main(int argc, char ** argv)
   uint8_t dxl_error = 0;
   int dxl_comm_result = COMM_TX_FAIL;
 
-  ros::init(argc, argv, "read_write_node");
-  ros::NodeHandle nh;
-
   portHandler = dynamixel::PortHandler::getPortHandler(DEVICE_NAME);
   packetHandler = dynamixel::PacketHandler::getPacketHandler(PROTOCOL_VERSION);
 
@@ -124,22 +121,24 @@ int main(int argc, char ** argv)
     return -1;
   }
 
-  ros::Subscriber set_position_sub = nh.subscribe("/set_position", 10, setPositionCallback);
-  ros::ServiceServer get_position_srv = nh.advertiseService("/get_position", getPresentPosition);
-
   dxl_comm_result = packetHandler->write1ByteTxRx(
     portHandler, DXL1_ID, ADDR_TORQUE_ENABLE, 1, &dxl_error);
   if (dxl_comm_result != COMM_SUCCESS) {
-    ROS_ERROR_STREAM("Failed to enable torque for Dynamixel ID 1! Result: " << dxl_comm_result);
+    ROS_ERROR_STREAM("Failed to enable torque for Dynamixel ID " << DXL1_ID);
     return -1;
   }
 
   dxl_comm_result = packetHandler->write1ByteTxRx(
     portHandler, DXL2_ID, ADDR_TORQUE_ENABLE, 1, &dxl_error);
   if (dxl_comm_result != COMM_SUCCESS) {
-    ROS_ERROR_STREAM("Failed to enable torque for Dynamixel ID 2! Result: " << dxl_comm_result);
+    ROS_ERROR_STREAM("Failed to enable torque for Dynamixel ID " << DXL2_ID);
     return -1;
   }
+
+  ros::init(argc, argv, "read_write_node");
+  ros::NodeHandle nh;
+  ros::Subscriber set_position_sub = nh.subscribe("/set_position", 10, setPositionCallback);
+  ros::ServiceServer get_position_srv = nh.advertiseService("/get_position", getPresentPositionCallback);
 
   while (ros::ok()) {
     usleep(8 * 1000);
@@ -147,5 +146,6 @@ int main(int argc, char ** argv)
     ros::spin();
   }
 
+  portHandler->closePort();
   return 0;
 }
