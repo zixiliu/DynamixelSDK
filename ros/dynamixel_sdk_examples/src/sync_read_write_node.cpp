@@ -24,12 +24,9 @@
  * $ rosrun dynamixel_sdk_examples sync_read_write_node
  *
  * Open terminal #3 (run one of below commands at a time)
- * $ rostopic pub -1 /set_position dynamixel_sdk_examples/SetPosition "{id: 1, position: 0}"
- * $ rostopic pub -1 /set_position dynamixel_sdk_examples/SetPosition "{id: 1, position: 1000}"
- * $ rosservice call /get_position "id: 1"
- * $ rostopic pub -1 /set_position dynamixel_sdk_examples/SetPosition "{id: 2, position: 0}"
- * $ rostopic pub -1 /set_position dynamixel_sdk_examples/SetPosition "{id: 2, position: 1000}"
- * $ rosservice call /get_position "id: 2"
+ * $ rostopic pub -1 /set_position dynamixel_sdk_examples/SyncSetPosition "{id1: 1, id2: 2, position1: 0, position2: 1000}"
+ * $ rostopic pub -1 /set_position dynamixel_sdk_examples/SyncSetPosition "{id1: 1, id2: 2, position1: 1000, position2: 0}"
+ * $ rosservice call /get_position "{id1: 1, id2: 2}"
  *
  * Author: Jaehyun Shim
 *******************************************************************************/
@@ -37,8 +34,8 @@
 #include <ros/ros.h>
 
 #include "std_msgs/String.h"
-#include "dynamixel_sdk_examples/GetPosition.h"
-#include "dynamixel_sdk_examples/SetPosition.h"
+#include "dynamixel_sdk_examples/SyncGetPosition.h"
+#include "dynamixel_sdk_examples/SyncSetPosition.h"
 #include "dynamixel_sdk/dynamixel_sdk.h"
 
 using namespace dynamixel;
@@ -64,8 +61,8 @@ GroupSyncRead groupSyncRead(portHandler, packetHandler, ADDR_PRESENT_POSITION, 4
 GroupSyncWrite groupSyncWrite(portHandler, packetHandler, ADDR_GOAL_POSITION, 4);
 
 bool getPresentPositionCallback(
-  dynamixel_sdk_examples::GetPosition::Request & req,
-  dynamixel_sdk_examples::GetPosition::Response & res)
+  dynamixel_sdk_examples::SyncGetPosition::Request & req,
+  dynamixel_sdk_examples::SyncGetPosition::Response & res)
 {
   uint8_t dxl_error = 0;
   int dxl_comm_result = COMM_TX_FAIL;
@@ -77,25 +74,28 @@ bool getPresentPositionCallback(
 
   // Read Present Position (length : 4 bytes) and Convert uint32 -> int32
   // When reading 2 byte data from AX / MX(1.0), use read2ByteTxRx() instead.
-  dxl_addparam_result = groupSyncRead.addParam(DXL1_ID);
+  dxl_addparam_result = groupSyncRead.addParam((uint8_t)req.id1);
   if (dxl_addparam_result != true)
   {
-    ROS_ERROR_STREAM("Failed to addparam to groupSyncRead for Dynamixel ID " << DXL1_ID);
+    ROS_ERROR_STREAM("Failed to addparam to groupSyncRead for Dynamixel ID " << req.id1);
     return 0;
   }
 
-  dxl_addparam_result = groupSyncRead.addParam(DXL2_ID);
+  dxl_addparam_result = groupSyncRead.addParam((uint8_t)req.id2);
   if (dxl_addparam_result != true)
   {
-    ROS_ERROR_STREAM("Failed to addparam to groupSyncRead for Dynamixel ID " << DXL2_ID);
+    ROS_ERROR_STREAM("Failed to addparam to groupSyncRead for Dynamixel ID " << req.id2);
     return 0;
   }
 
   dxl_comm_result = groupSyncRead.txRxPacket();
-  if (dxl_comm_result == COMM_SUCCESS && pos1 == pos2) {
-    pos1 = groupSyncRead.getData(DXL1_ID, ADDR_PRESENT_POSITION, 4);
-    pos2 = groupSyncRead.getData(DXL2_ID, ADDR_PRESENT_POSITION, 4);
+  if (dxl_comm_result == COMM_SUCCESS) {
+    pos1 = groupSyncRead.getData((uint8_t)req.id1, ADDR_PRESENT_POSITION, 4);
+    pos2 = groupSyncRead.getData((uint8_t)req.id2, ADDR_PRESENT_POSITION, 4);
     ROS_INFO("getPosition : [POSITION:%d]", pos1);
+    ROS_INFO("getPosition : [POSITION:%d]", pos2);
+    res.position1 = pos1;
+    res.position2 = pos2;
     groupSyncRead.clearParam();
     return true;
   } else {
@@ -105,37 +105,44 @@ bool getPresentPositionCallback(
   }
 }
 
-void setPositionCallback(const dynamixel_sdk_examples::SetPosition::ConstPtr & msg)
+void setPositionCallback(const dynamixel_sdk_examples::SyncSetPosition::ConstPtr & msg)
 {
   uint8_t dxl_error = 0;
   int dxl_comm_result = COMM_TX_FAIL;
   int dxl_addparam_result = false;
-  uint8_t param_goal_pos[4];
+  uint8_t param_goal_pos1[4];
+  uint8_t param_goal_pos2[4];
 
   // Position Value of X series is 4 byte data. For AX & MX(1.0) use 2 byte data(uint16_t) for the Position Value.
-  uint32_t pos = (unsigned int)msg->position; // Convert int32 -> uint32
-  param_goal_pos[0] = DXL_LOBYTE(DXL_LOWORD(pos));
-  param_goal_pos[1] = DXL_HIBYTE(DXL_LOWORD(pos));
-  param_goal_pos[2] = DXL_LOBYTE(DXL_HIWORD(pos));
-  param_goal_pos[3] = DXL_HIBYTE(DXL_HIWORD(pos));
+  uint32_t pos1 = (unsigned int)msg->position1; // Convert int32 -> uint32
+  param_goal_pos1[0] = DXL_LOBYTE(DXL_LOWORD(pos1));
+  param_goal_pos1[1] = DXL_HIBYTE(DXL_LOWORD(pos1));
+  param_goal_pos1[2] = DXL_LOBYTE(DXL_HIWORD(pos1));
+  param_goal_pos1[3] = DXL_HIBYTE(DXL_HIWORD(pos1));
+  uint32_t pos2 = (unsigned int)msg->position2; // Convert int32 -> uint32
+  param_goal_pos2[0] = DXL_LOBYTE(DXL_LOWORD(pos2));
+  param_goal_pos2[1] = DXL_HIBYTE(DXL_LOWORD(pos2));
+  param_goal_pos2[2] = DXL_LOBYTE(DXL_HIWORD(pos2));
+  param_goal_pos2[3] = DXL_HIBYTE(DXL_HIWORD(pos2));
 
   // Write Goal Position (length : 4 bytes)
   // When writing 2 byte data to AX / MX(1.0), use write2ByteTxRx() instead.
-  dxl_addparam_result = groupSyncWrite.addParam(DXL1_ID, param_goal_pos);
+  dxl_addparam_result = groupSyncWrite.addParam((uint8_t)msg->id1, param_goal_pos1);
   if (dxl_addparam_result != true)
   {
-    ROS_ERROR_STREAM( "Failed to addparam to groupSyncWrite for Dynamixel ID " << DXL1_ID);
+    ROS_ERROR_STREAM( "Failed to addparam to groupSyncWrite for Dynamixel ID " << msg->id1);
   }
 
-  dxl_addparam_result = groupSyncWrite.addParam(DXL2_ID, param_goal_pos);
+  dxl_addparam_result = groupSyncWrite.addParam((uint8_t)msg->id2, param_goal_pos2);
   if (dxl_addparam_result != true)
   {
-    ROS_ERROR_STREAM( "Failed to addparam to groupSyncWrite for Dynamixel ID " << DXL2_ID);
+    ROS_ERROR_STREAM( "Failed to addparam to groupSyncWrite for Dynamixel ID " << msg->id2);
   }
 
   dxl_comm_result = groupSyncWrite.txPacket();
   if (dxl_comm_result == COMM_SUCCESS) {
-    ROS_INFO("setPosition : [POSITION:%d]", msg->position);
+    ROS_INFO("setPosition : [ID:%d] [POSITION:%d]", msg->id1, msg->position1);
+    ROS_INFO("setPosition : [ID:%d] [POSITION:%d]", msg->id2, msg->position2);
   } else {
     ROS_ERROR_STREAM("Failed to set position! Result: " << dxl_comm_result);
   }
