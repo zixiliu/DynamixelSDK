@@ -26,6 +26,7 @@ add_message_files(
   FILES
     SetPosition.msg
     SyncSetPosition.msg
+    BulkSetItem.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -33,6 +34,7 @@ add_service_files(
   FILES
     GetPosition.srv
     SyncGetPosition.srv
+    BulkGetItem.srv
 )
 
 ## Generate added messages and services with any dependencies listed here

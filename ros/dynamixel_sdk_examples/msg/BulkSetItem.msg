@@ -1,0 +1,6 @@
+uint8 id1
+uint8 id2
+int32 position1
+int32 position2
+int32 led1
+int32 led2
