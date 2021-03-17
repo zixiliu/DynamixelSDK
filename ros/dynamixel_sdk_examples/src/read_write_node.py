@@ -20,18 +20,18 @@
 # This example is written for DYNAMIXEL X(excluding XL-320) and MX(2.0) series with U2D2.
 # For other series, please refer to the product eManual and modify the Control Table addresses and other definitions.
 # To test this example, please follow the commands below.
-# 
+#
 # Open terminal #1
 # $ roscore
-# 
+#
 # Open terminal #2
 # $ rosrun dynamixel_sdk_examples read_write_node.py
-# 
+#
 # Open terminal #3 (run one of below commands at a time)
 # $ rostopic pub -1 /set_position dynamixel_sdk_examples/SetPosition "{id: 1, position: 0}"
 # $ rostopic pub -1 /set_position dynamixel_sdk_examples/SetPosition "{id: 1, position: 1000}"
 # $ rosservice call /get_position "id: 1"
-# 
+#
 # Author: Will Son
 #******************************************************************************/
 
@@ -115,7 +115,7 @@ def main():
         print("Press any key to terminate...")
         getch()
         quit()
-    
+
     # Enable Dynamixel Torque
     dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
     if dxl_comm_result != COMM_SUCCESS:
@@ -130,7 +130,7 @@ def main():
         quit()
     else:
         print("DYNAMIXEL has been successfully connected")
-    
+
     print("Ready to get & set Position.")
 
     read_write_py_node()
