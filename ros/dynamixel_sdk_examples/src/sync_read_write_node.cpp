@@ -60,7 +60,7 @@ PacketHandler * packetHandler = dynamixel::PacketHandler::getPacketHandler(PROTO
 GroupSyncRead groupSyncRead(portHandler, packetHandler, ADDR_PRESENT_POSITION, 4);
 GroupSyncWrite groupSyncWrite(portHandler, packetHandler, ADDR_GOAL_POSITION, 4);
 
-bool getPresentPositionCallback(
+bool syncGetPresentPositionCallback(
   dynamixel_sdk_examples::SyncGetPosition::Request & req,
   dynamixel_sdk_examples::SyncGetPosition::Response & res)
 {
@@ -105,7 +105,7 @@ bool getPresentPositionCallback(
   }
 }
 
-void setPositionCallback(const dynamixel_sdk_examples::SyncSetPosition::ConstPtr & msg)
+void syncSetPositionCallback(const dynamixel_sdk_examples::SyncSetPosition::ConstPtr & msg)
 {
   uint8_t dxl_error = 0;
   int dxl_comm_result = COMM_TX_FAIL;
@@ -181,8 +181,8 @@ int main(int argc, char ** argv)
 
   ros::init(argc, argv, "sync_read_write_node");
   ros::NodeHandle nh;
-  ros::Subscriber set_position_sub = nh.subscribe("/set_position", 10, setPositionCallback);
-  ros::ServiceServer get_position_srv = nh.advertiseService("/get_position", getPresentPositionCallback);
+  ros::ServiceServer sync_get_position_srv = nh.advertiseService("/sync_get_position", syncGetPresentPositionCallback);
+  ros::Subscriber sync_set_position_sub = nh.subscribe("/sync_set_position", 10, syncSetPositionCallback);
 
   while (ros::ok()) {
     usleep(8 * 1000);

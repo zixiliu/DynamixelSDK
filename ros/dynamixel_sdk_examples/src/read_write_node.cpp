@@ -137,8 +137,8 @@ int main(int argc, char ** argv)
 
   ros::init(argc, argv, "read_write_node");
   ros::NodeHandle nh;
-  ros::Subscriber set_position_sub = nh.subscribe("/set_position", 10, setPositionCallback);
   ros::ServiceServer get_position_srv = nh.advertiseService("/get_position", getPresentPositionCallback);
+  ros::Subscriber set_position_sub = nh.subscribe("/set_position", 10, setPositionCallback);
 
   while (ros::ok()) {
     usleep(8 * 1000);
