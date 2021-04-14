@@ -1,5 +1,11 @@
 # Dynamixel SDK Release Notes
 
+3.7.42(2021-04-14)
+-------------------
+* Update Matlab, Python, Labview examples
+* Add Sync / Bulk read write ROS examples
+* Contributors: JaehyunShim, David Park, Ashe Kim, Will Son
+
 3.7.41(2020-08-12)
 -------------------
 * DYNAMIXEL SDK ROS example initial commit.
