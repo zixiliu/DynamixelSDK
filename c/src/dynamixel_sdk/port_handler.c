@@ -16,8 +16,12 @@
 
 /* Author: Ryu Woon Jung (Leon) */
 
-#if defined(__linux__)
 #include "port_handler.h"
+
+int g_used_port_num = 0;
+uint8_t *g_is_using;
+
+#if defined(__linux__)
 #include "port_handler_linux.h"
 
 int     portHandler         (const char *port_name) { return portHandlerLinux(port_name); }
@@ -42,7 +46,6 @@ void    setPacketTimeoutMSec(int port_num, double msec) { setPacketTimeoutMSecLi
 uint8_t isPacketTimeout     (int port_num) { return isPacketTimeoutLinux(port_num); }
 
 #elif defined(__APPLE__)
-#include "port_handler.h"
 #include "port_handler_mac.h"
 
 int     portHandler         (const char *port_name) { return portHandlerMac(port_name); }
@@ -68,7 +71,6 @@ uint8_t isPacketTimeout     (int port_num) { return isPacketTimeoutMac(port_num)
 
 #elif defined(_WIN32) || defined(_WIN64)
 #define WINDLLEXPORT
-#include "port_handler.h"
 #include "port_handler_windows.h"
 
 int     portHandler         (const char *port_name) { return portHandlerWindows(port_name); }
@@ -89,5 +91,27 @@ int     writePort           (int port_num, uint8_t *packet, int length) { return
 void    setPacketTimeout    (int port_num, uint16_t packet_length) { setPacketTimeoutWindows(port_num, packet_length); }
 void    setPacketTimeoutMSec(int port_num, double msec) { setPacketTimeoutMSecWindows(port_num, msec); }
 uint8_t isPacketTimeout     (int port_num) { return isPacketTimeoutWindows(port_num); }
+
+#elif defined(__USE_CMSIS)
+#include "port_handler_cmsis.h"
+
+int     portHandler         (const char *port_name) { return portHandlerCMSIS(port_name); }
+
+uint8_t openPort            (int port_num) { return openPortCMSIS(port_num); }
+void    closePort           (int port_num) { closePortCMSIS(port_num); }
+void    clearPort           (int port_num) { clearPortCMSIS(port_num); }
+
+void    setPortName         (int port_num, const char *port_name) { setPortNameCMSIS(port_num, port_name); }
+char   *getPortName         (int port_num) { return getPortNameCMSIS(port_num); }
+
+uint8_t setBaudRate         (int port_num, const int baudrate) { return setBaudRateCMSIS(port_num, baudrate); }
+int     getBaudRate         (int port_num) { return getBaudRateCMSIS(port_num); }
+
+int     readPort            (int port_num, uint8_t *packet, int length) { return readPortCMSIS(port_num, packet, length); }
+int     writePort           (int port_num, uint8_t *packet, int length) { return writePortCMSIS(port_num, packet, length); }
+
+void    setPacketTimeout    (int port_num, uint16_t packet_length) { setPacketTimeoutCMSIS(port_num, packet_length); }
+void    setPacketTimeoutMSec(int port_num, double msec) { setPacketTimeoutMSecCMSIS(port_num, msec); }
+uint8_t isPacketTimeout     (int port_num) { return isPacketTimeoutCMSIS(port_num); }
 
 #endif

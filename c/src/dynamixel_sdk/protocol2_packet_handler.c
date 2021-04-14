@@ -26,6 +26,8 @@
 #define WINDLLEXPORT
 #include <Windows.h>
 #include "protocol2_packet_handler.h"
+#elif defined(__USE_CMSIS)
+#include "protocol2_packet_handler.h"
 #endif
 
 #include <stdio.h>
