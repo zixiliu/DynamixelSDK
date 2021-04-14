@@ -2,7 +2,7 @@
 Changelog for package dynamixel_sdk
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-3.7.42(2021-04-14)
+3.7.51(2021-04-14)
 -------------------
 * Add Sync / Bulk read write ROS examples
 * Contributors: JaehyunShim
