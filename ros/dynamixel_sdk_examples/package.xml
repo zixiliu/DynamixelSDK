@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>dynamixel_sdk_examples</name>
-  <version>0.1.1</version>
+  <version>3.7.51</version>
   <description>The DYNAMIXEL SDK ROS example package</description>
 
   <author email="zerom@robotis.com">zerom</author> -->
-  <maintainer email="zerom@robotis.com">zerom</maintainer>
+  <maintainer email="willson@robotis.com">Will Son</maintainer>
 
   <license>Apache 2.0</license>
 
