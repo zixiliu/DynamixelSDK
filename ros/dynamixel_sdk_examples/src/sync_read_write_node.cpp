@@ -76,13 +76,13 @@ bool syncGetPresentPositionCallback(
   // When reading 2 byte data from AX / MX(1.0), use read2ByteTxRx() instead.
   dxl_addparam_result = groupSyncRead.addParam((uint8_t)req.id1);
   if (dxl_addparam_result != true) {
-    ROS_ERROR("Failed to addparam to groupSyncRead for Dynamixel ID ", req.id1);
+    ROS_ERROR("Failed to addparam to groupSyncRead for Dynamixel ID %d", req.id1);
     return 0;
   }
 
   dxl_addparam_result = groupSyncRead.addParam((uint8_t)req.id2);
   if (dxl_addparam_result != true) {
-    ROS_ERROR("Failed to addparam to groupSyncRead for Dynamixel ID ", req.id2);
+    ROS_ERROR("Failed to addparam to groupSyncRead for Dynamixel ID %d", req.id2);
     return 0;
   }
 
@@ -97,7 +97,7 @@ bool syncGetPresentPositionCallback(
     groupSyncRead.clearParam();
     return true;
   } else {
-    ROS_ERROR("Failed to get position! Result: ", dxl_comm_result);
+    ROS_ERROR("Failed to get position! Result: %d", dxl_comm_result);
     groupSyncRead.clearParam();
     return false;
   }
