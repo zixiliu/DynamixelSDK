@@ -17,16 +17,14 @@
 # limitations under the License.
 ################################################################################
 
-# Author: Ryu Woon Jung (Leon)
-
-#
 # *********     Sync Write Example      *********
-#
 #
 # Available Dynamixel model on this example : All models using Protocol 1.0
 # This example is tested with two Dynamixel MX-28, and an USB2DYNAMIXEL
 # Be sure that Dynamixel MX properties are already set as %% ID : 1 / Baudnum : 34 (Baudrate : 57600)
 #
+# Author: Ryu Woon Jung (Leon)
+
 
 import os
 
@@ -49,13 +47,13 @@ else:
 from dynamixel_sdk import *                    # Uses Dynamixel SDK library
 
 # Control table address
-ADDR_MX_TORQUE_ENABLE      = 64               # Control table address is different in Dynamixel model
-ADDR_MX_GOAL_POSITION      = 116
-ADDR_MX_PRESENT_POSITION   = 132
+ADDR_MX_TORQUE_ENABLE      = 24               # Control table address is different in Dynamixel model
+ADDR_MX_GOAL_POSITION      = 30
+ADDR_MX_PRESENT_POSITION   = 36
 
 # Data Byte Length
-LEN_MX_GOAL_POSITION       = 4
-LEN_MX_PRESENT_POSITION    = 4
+LEN_MX_GOAL_POSITION       = 2
+LEN_MX_PRESENT_POSITION    = 2
 
 # Protocol version
 PROTOCOL_VERSION            = 1.0               # See which protocol version is used in the Dynamixel
@@ -69,8 +67,8 @@ DEVICENAME                  = '/dev/ttyUSB0'    # Check which port is being used
 
 TORQUE_ENABLE               = 1                 # Value for enabling the torque
 TORQUE_DISABLE              = 0                 # Value for disabling the torque
-DXL_MINIMUM_POSITION_VALUE  = 100           # Dynamixel will rotate between this value
-DXL_MAXIMUM_POSITION_VALUE  = 4000            # and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
+DXL_MINIMUM_POSITION_VALUE  = 0                 # Dynamixel will rotate between this value
+DXL_MAXIMUM_POSITION_VALUE  = 1023              # and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
 DXL_MOVING_STATUS_THRESHOLD = 20                # Dynamixel moving status threshold
 
 index = 0
@@ -134,7 +132,7 @@ while 1:
         break
 
     # Allocate goal position value into byte array
-    param_goal_position = [DXL_LOBYTE(DXL_LOWORD(dxl_goal_position[index])), DXL_HIBYTE(DXL_LOWORD(dxl_goal_position[index])), DXL_LOBYTE(DXL_HIWORD(dxl_goal_position[index])), DXL_HIBYTE(DXL_HIWORD(dxl_goal_position[index]))]
+    param_goal_position = [DXL_LOBYTE(dxl_goal_position[index]), DXL_HIBYTE(dxl_goal_position[index])]
 
     # Add Dynamixel#1 goal position value to the Syncwrite parameter storage
     dxl_addparam_result = groupSyncWrite.addParam(DXL1_ID, param_goal_position)
@@ -158,14 +156,14 @@ while 1:
 
     while 1:
         # Read Dynamixel#1 present position
-        dxl1_present_position, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler, DXL1_ID, ADDR_MX_PRESENT_POSITION)
+        dxl1_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, DXL1_ID, ADDR_MX_PRESENT_POSITION)
         if dxl_comm_result != COMM_SUCCESS:
             print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
             print("%s" % packetHandler.getRxPacketError(dxl_error))
 
         # Read Dynamixel#2 present position
-        dxl2_present_position, dxl_comm_result, dxl_error = packetHandler.read4ByteTxRx(portHandler, DXL2_ID, ADDR_MX_PRESENT_POSITION)
+        dxl2_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler, DXL2_ID, ADDR_MX_PRESENT_POSITION)
         if dxl_comm_result != COMM_SUCCESS:
             print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
         elif dxl_error != 0:
