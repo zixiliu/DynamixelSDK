@@ -15,14 +15,14 @@ jobs:
       fail-fast: false
       matrix:
         ros_distribution:
-          - kinetic
+          # - kinetic
           - melodic
           - noetic
         include:
             # Kinetic Kame (May 2016 - May 2021)
-          - docker_image: ubuntu:xenial
-            ros_distribution: kinetic
-            ros_version: 1
+          # - docker_image: ubuntu:xenial
+          #   ros_distribution: kinetic
+          #   ros_version: 1
             # Melodic Morenia (May 2018 - May 2023)
           - docker_image: ubuntu:bionic
             ros_distribution: melodic
@@ -41,7 +41,7 @@ jobs:
         with:
           path: ros_ws/src
       - name: Setup ROS environment
-        uses: ros-tooling/setup-ros@0.1.2
+        uses: ros-tooling/setup-ros@0.2.1
         with:
           required-ros-distributions: ${{ matrix.ros_distribution }}
       - name: Build and Test
