@@ -29,8 +29,9 @@
 
 typedef struct
 {
-  uint8_t     id;
-  uint8_t     *data;
+  uint8_t  id;
+  uint8_t  error;  // TODO. not used
+  uint8_t  *data;
 }DataList;
 
 typedef struct
@@ -227,11 +228,39 @@ void groupSyncReadTxPacket(int group_num)
   if (groupData[group_num].is_param_changed == True)
     groupSyncReadMakeParam(group_num);
 
-  syncReadTx(groupData[group_num].port_num
-    , groupData[group_num].protocol_version
-    , groupData[group_num].start_address
-    , groupData[group_num].data_length
-    , (size(group_num) * 1));
+  syncReadTx(groupData[group_num].port_num,
+    groupData[group_num].protocol_version,
+    groupData[group_num].start_address,
+    groupData[group_num].data_length,
+    (size(group_num) * 1),
+    DISABLE_FAST_OPTION);
+}
+
+void groupFastSyncReadTxPacket(int group_num)
+{
+  int port_num = groupData[group_num].port_num;
+
+  if (groupData[group_num].protocol_version == 1)
+  {
+    packetData[port_num].communication_result = COMM_NOT_AVAILABLE;
+    return;
+  }
+
+  if (size(group_num) == 0)
+  {
+    packetData[port_num].communication_result = COMM_NOT_AVAILABLE;
+    return;
+  }
+
+  if (groupData[group_num].is_param_changed == True)
+    groupSyncReadMakeParam(group_num);
+
+  syncReadTx(groupData[group_num].port_num,
+    groupData[group_num].protocol_version,
+    groupData[group_num].start_address,
+    groupData[group_num].data_length,
+    (size(group_num) * 1),
+    ENABLE_FAST_OPTION);
 }
 
 void groupSyncReadRxPacket(int group_num)
@@ -275,6 +304,87 @@ void groupSyncReadRxPacket(int group_num)
     groupData[group_num].last_result = True;
 }
 
+void groupFastSyncReadRxPacket(int group_num)
+{
+  int index = 0;
+  int port_num = groupData[group_num].port_num;
+  // The size of data in Param + CRC of Fast Sync Read Rx packet
+  int data_size = (groupData[group_num].data_length + 4) * groupData[group_num].data_list_length * sizeof(uint8_t) - 1;
+
+  groupData[group_num].last_result = False;
+
+  if (groupData[group_num].protocol_version == 1)
+  {
+    packetData[port_num].communication_result = COMM_NOT_AVAILABLE;
+    return;
+  }
+
+  packetData[groupData[group_num].port_num].communication_result = COMM_RX_FAIL;
+
+  if (size(group_num) == 0)
+  {
+    packetData[groupData[group_num].port_num].communication_result = COMM_NOT_AVAILABLE;
+    return;
+  }
+
+  // only ONE status packet is received. Parse once and exit.
+  packetData[port_num].data_read = (uint8_t *)realloc(packetData[port_num].data_read, data_size);
+  // save the stripped packet to data_read buffer (ID + Param + CRC + ERR + ID + Param + CRC + ... + CRC)
+  readRx(groupData[group_num].port_num, groupData[group_num].protocol_version, data_size);
+  
+  if (packetData[port_num].communication_result != COMM_SUCCESS)
+  {
+    return;
+  }
+
+  for (uint8_t index_id = 0; index_id < groupData[group_num].data_list_length; )
+  {
+    // The first packet that doesn't have ERR. [ID + Param + CRC]
+    if (index_id == 0) {
+      index = 0;
+      if (groupData[group_num].data_list[index_id].id == packetData[port_num].data_read[index])
+      {
+        index = index + 1;
+        for (int loop_for_data = 0; loop_for_data < groupData[group_num].data_length; )
+        {
+          groupData[group_num].data_list[index_id].data[loop_for_data] = packetData[port_num].data_read[index];
+          index = index + 1;
+          loop_for_data = loop_for_data + 1;
+        }
+        // Skip the CRC. CRC check has been done already in the readRX().
+        index = index + 2;
+      } else {
+        // Rx doesn't match with requested ID
+        return;
+      }
+    }
+    // Second and after : [ERR + ID + Param + CRC]
+    else {
+      // Skip the ERR byte
+      index = index + 1;
+      if (groupData[group_num].data_list[index_id].id == packetData[port_num].data_read[index])
+      {
+        index = index + 1;
+        for (int loop_for_data = 0; loop_for_data < groupData[group_num].data_length; )
+        {
+          groupData[group_num].data_list[index_id].data[loop_for_data] = packetData[port_num].data_read[index];
+          index = index + 1;
+          loop_for_data = loop_for_data + 1;
+        }
+        // Skip the CRC. CRC check has been done already in the readRX().
+        index = index + 2;
+      } else {
+        // Rx doesn't match with requested ID
+        return;
+      }
+    }
+    index_id = index_id + 1;
+  }
+
+  if (packetData[port_num].communication_result == COMM_SUCCESS)
+    groupData[group_num].last_result = True;
+}
+
 void groupSyncReadTxRxPacket(int group_num)
 {
   int port_num = groupData[group_num].port_num;
@@ -292,6 +402,25 @@ void groupSyncReadTxRxPacket(int group_num)
     return;
 
   groupSyncReadRxPacket(group_num);
+}
+
+void groupFastSyncReadTxRxPacket(int group_num)
+{
+  int port_num = groupData[group_num].port_num;
+
+  if (groupData[group_num].protocol_version == 1)
+  {
+    packetData[port_num].communication_result = COMM_NOT_AVAILABLE;
+    return;
+  }
+
+  packetData[port_num].communication_result = COMM_TX_FAIL;
+
+  groupFastSyncReadTxPacket(group_num);
+  if (packetData[port_num].communication_result != COMM_SUCCESS)
+    return;
+
+  groupFastSyncReadRxPacket(group_num);
 }
 
 uint8_t groupSyncReadIsAvailable(int group_num, uint8_t id, uint16_t address, uint16_t data_length)
@@ -320,16 +449,21 @@ uint32_t groupSyncReadGetData(int group_num, uint8_t id, uint16_t address, uint1
       return groupData[group_num].data_list[data_num].data[address - groupData[group_num].start_address];
 
     case 2:
-      return DXL_MAKEWORD(groupData[group_num].data_list[data_num].data[address - groupData[group_num].start_address], groupData[group_num].data_list[data_num].data[address - groupData[group_num].start_address + 1]);
+      return DXL_MAKEWORD(
+        groupData[group_num].data_list[data_num].data[address - groupData[group_num].start_address],
+        groupData[group_num].data_list[data_num].data[address - groupData[group_num].start_address + 1]
+      );
 
     case 4:
       return DXL_MAKEDWORD(
         DXL_MAKEWORD(
-        groupData[group_num].data_list[data_num].data[address - groupData[group_num].start_address + 0]
-        , groupData[group_num].data_list[data_num].data[address - groupData[group_num].start_address + 1])
-        , DXL_MAKEWORD(
-          groupData[group_num].data_list[data_num].data[address - groupData[group_num].start_address + 2]
-          , groupData[group_num].data_list[data_num].data[address - groupData[group_num].start_address + 3])
+          groupData[group_num].data_list[data_num].data[address - groupData[group_num].start_address + 0],
+          groupData[group_num].data_list[data_num].data[address - groupData[group_num].start_address + 1]
+        ),
+        DXL_MAKEWORD(
+          groupData[group_num].data_list[data_num].data[address - groupData[group_num].start_address + 2],
+          groupData[group_num].data_list[data_num].data[address - groupData[group_num].start_address + 3]
+        )
       );
 
     default:

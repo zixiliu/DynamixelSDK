@@ -36,7 +36,7 @@ WINDECLSPEC void        setDataWrite2       (int port_num, uint16_t data_length,
 WINDECLSPEC uint32_t    getDataRead2        (int port_num, uint16_t data_length, uint16_t data_pos);
 
 WINDECLSPEC void        txPacket2           (int port_num);
-WINDECLSPEC void        rxPacket2           (int port_num);
+WINDECLSPEC void        rxPacket2           (int port_num, uint8_t fast_option);
 WINDECLSPEC void        txRxPacket2         (int port_num);
 
 WINDECLSPEC void        ping2               (int port_num, uint8_t id);
@@ -52,7 +52,7 @@ WINDECLSPEC void        clearMultiTurn2     (int port_num, uint8_t id);
 WINDECLSPEC void        factoryReset2       (int port_num, uint8_t id, uint8_t option);
 
 WINDECLSPEC void        readTx2             (int port_num, uint8_t id, uint16_t address, uint16_t length);
-WINDECLSPEC void        readRx2             (int port_num, uint16_t length);
+WINDECLSPEC void        readRx2             (int port_num, uint16_t length, uint8_t fast_option);
 WINDECLSPEC void        readTxRx2           (int port_num, uint8_t id, uint16_t address, uint16_t length);
 
 WINDECLSPEC void        read1ByteTx2        (int port_num, uint8_t id, uint16_t address);
@@ -82,7 +82,8 @@ WINDECLSPEC void        write4ByteTxRx2     (int port_num, uint8_t id, uint16_t 
 WINDECLSPEC void        regWriteTxOnly2     (int port_num, uint8_t id, uint16_t address, uint16_t length);
 WINDECLSPEC void        regWriteTxRx2       (int port_num, uint8_t id, uint16_t address, uint16_t length);
 
-WINDECLSPEC void        syncReadTx2         (int port_num, uint16_t start_address, uint16_t data_length, uint16_t param_length);
+WINDECLSPEC void        syncReadTx2         (int port_num, uint16_t start_address, uint16_t data_length, uint16_t param_length, uint8_t fast_option);
+WINDECLSPEC void        fastSyncReadTx2     (int port_num, uint16_t start_address, uint16_t data_length, uint16_t param_length);
 // syncReadRx   -> GroupSyncRead
 // syncReadTxRx -> GroupSyncRead
 

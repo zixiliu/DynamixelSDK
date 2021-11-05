@@ -32,6 +32,9 @@ WINDECLSPEC void        groupSyncReadClearParam     (int group_num);
 WINDECLSPEC void        groupSyncReadTxPacket       (int group_num);
 WINDECLSPEC void        groupSyncReadRxPacket       (int group_num);
 WINDECLSPEC void        groupSyncReadTxRxPacket     (int group_num);
+WINDECLSPEC void        groupFastSyncReadTxPacket   (int group_num);
+WINDECLSPEC void        groupFastSyncReadRxPacket   (int group_num);
+WINDECLSPEC void        groupFastSyncReadTxRxPacket (int group_num);
 
 WINDECLSPEC uint8_t     groupSyncReadIsAvailable    (int group_num, uint8_t id, uint16_t address, uint16_t data_length);
 WINDECLSPEC uint32_t    groupSyncReadGetData        (int group_num, uint8_t id, uint16_t address, uint16_t data_length);

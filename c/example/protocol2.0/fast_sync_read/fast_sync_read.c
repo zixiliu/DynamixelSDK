@@ -1,30 +1,26 @@
-/*******************************************************************************
-* Copyright 2017 ROBOTIS CO., LTD.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*******************************************************************************/
+// Copyright 2021 ROBOTIS CO., LTD.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-/* Author: Ryu Woon Jung (Leon) */
+// Fast Sync Read Example Environment
+//
+// - DYNAMIXEL: X series (except XL-320)
+//              ID = 1, 2, Baudrate = 57600bps, Protocol 2.0
+// - USB-Serial Interface : U2D2 (DYNAMIXEL Starter Set)
+// - Library: DYNAMIXEL SDK v3.8.1 or later
+//
+// Author: Will Son
 
-//
-// *********     Sync Read and Sync Write Example      *********
-//
-//
-// Available DYNAMIXEL model on this example : All models using Protocol 2.0
-// This example is designed for using two DYNAMIXEL PRO 54-200, and an USB2DYNAMIXEL.
-// To use another DYNAMIXEL model, such as X series, see their details in E-Manual(emanual.robotis.com) and edit below variables yourself.
-// Be sure that DYNAMIXEL PRO properties are already set as %% ID : 1 / Baudnum : 1 (Baudrate : 57600)
-//
 
 #if defined(__linux__) || defined(__APPLE__)
 #include <fcntl.h>
@@ -39,10 +35,19 @@
 // Use DYNAMIXEL SDK library
 #include "dynamixel_sdk.h"
 
+// Uncomment below definition when running this example with P series
+// #define USE_DYNAMIXEL_P_SERIES
+
 // Control table address differs by DYNAMIXEL model
-#define ADDR_TORQUE_ENABLE  64
-#define ADDR_GOAL_POSITION  116
-#define ADDR_PRESENT_POSITION  132
+#ifdef USE_DYNAMIXEL_P_SERIES
+  #define ADDR_TORQUE_ENABLE  512
+  #define ADDR_GOAL_POSITION  564
+  #define ADDR_PRESENT_POSITION  580
+#else
+  #define ADDR_TORQUE_ENABLE  64
+  #define ADDR_GOAL_POSITION  116
+  #define ADDR_PRESENT_POSITION  132
+#endif
 
 // Data Byte Length
 #define LEN_GOAL_POSITION  4

@@ -307,6 +307,7 @@ void removeStuffing(uint8_t *packet)
   {
     if (packet[i + PKT_INSTRUCTION] == 0xFD && packet[i + PKT_INSTRUCTION + 1] == 0xFD && packet[i + PKT_INSTRUCTION - 1] == 0xFF && packet[i + PKT_INSTRUCTION - 2] == 0xFF)
     {   // FF FF FD FD
+      printf("\n\n!!!!! STUFFING DETECTED !!!!!\n\n");
       packet_length_out--;
       i++;
     }
@@ -369,7 +370,7 @@ void txPacket2(int port_num)
   packetData[port_num].communication_result = COMM_SUCCESS;
 }
 
-void rxPacket2(int port_num)
+void rxPacket2(int port_num, uint8_t fast_option)
 {
   uint16_t s;
   uint16_t idx;
@@ -383,24 +384,34 @@ void rxPacket2(int port_num)
   while (True)
   {
     rx_length += readPort(port_num, &packetData[port_num].rx_packet[rx_length], wait_length - rx_length);
+    
+    // if received more than 11 bytes
     if (rx_length >= wait_length)
     {
       idx = 0;
 
-      // find packet header
+      // find packet header from the beginning of the buffer
       for (idx = 0; idx < (rx_length - 3); idx++)
       {
-        if ((packetData[port_num].rx_packet[idx] == 0xFF) && (packetData[port_num].rx_packet[idx + 1] == 0xFF) && (packetData[port_num].rx_packet[idx + 2] == 0xFD) && (packetData[port_num].rx_packet[idx + 3] != 0xFD))
+        if ((packetData[port_num].rx_packet[idx] == 0xFF)
+          && (packetData[port_num].rx_packet[idx + 1] == 0xFF)
+          && (packetData[port_num].rx_packet[idx + 2] == 0xFD)
+          && (packetData[port_num].rx_packet[idx + 3] != 0xFD))
+        {
           break;
+        }
       }
 
-      if (idx == 0)   // found at the beginning of the packet
+      // if packet header is found in the buffer
+      // check if other packets are correct
+      if (idx == 0)
       {
         if (packetData[port_num].rx_packet[PKT_RESERVED] != 0x00 ||
-          packetData[port_num].rx_packet[PKT_ID] > 0xFC ||
+          // packetData[port_num].rx_packet[PKT_ID] > 0xFC ||
           DXL_MAKEWORD(packetData[port_num].rx_packet[PKT_LENGTH_L], packetData[port_num].rx_packet[PKT_LENGTH_H]) > RXPACKET_MAX_LEN ||
           packetData[port_num].rx_packet[PKT_INSTRUCTION] != 0x55)
         {
+          // if other packets are not correct -> possible corrupted packet
           // remove the first byte in the packet
           for (s = 0; s < rx_length - 1; s++)
           {
@@ -486,8 +497,13 @@ void rxPacket2(int port_num)
   }
   g_is_using[port_num] = False;
 
+  // Fast Sync Read and Fast Bulk Read do not use Byte Stuffing
+  // if (packetData[port_num].communication_result == COMM_SUCCESS &&
+  //   fast_option == DISABLE_FAST_OPTION)
   if (packetData[port_num].communication_result == COMM_SUCCESS)
-    removeStuffing(packetData[port_num].rx_packet);
+    {
+      removeStuffing(packetData[port_num].rx_packet);
+    }
 }
 
 // NOT for BulkRead / SyncRead instruction
@@ -521,10 +537,10 @@ void txRxPacket2(int port_num)
   }
 
   // rx packet
-  rxPacket2(port_num);
+  rxPacket2(port_num, DISABLE_FAST_OPTION);
   // check txpacket ID == rxpacket ID
   if (packetData[port_num].tx_packet[PKT_ID] != packetData[port_num].rx_packet[PKT_ID])
-    rxPacket2(port_num);
+    rxPacket2(port_num, DISABLE_FAST_OPTION);
 
   if (packetData[port_num].communication_result == COMM_SUCCESS && packetData[port_num].tx_packet[PKT_ID] != BROADCAST_ID)
   {
@@ -817,23 +833,29 @@ void readTx2(int port_num, uint8_t id, uint16_t address, uint16_t length)
     setPacketTimeout(port_num, (uint16_t)(length + 11));
 }
 
-void readRx2(int port_num, uint16_t length)
+void readRx2(int port_num, uint16_t length, uint8_t fast_option)
 {
   uint16_t s;
 
   packetData[port_num].communication_result = COMM_TX_FAIL;
-  packetData[port_num].rx_packet = (uint8_t *)realloc(packetData[port_num].rx_packet, RXPACKET_MAX_LEN);  //(length + 11 + (length/3));  // (length/3): consider stuffing
+  // (length + 11 + (length/3));  // (length/3): consider stuffing
+  packetData[port_num].rx_packet = (uint8_t *)realloc(packetData[port_num].rx_packet, RXPACKET_MAX_LEN);
+
   if (packetData[port_num].rx_packet == NULL)
   {
     printf("[ReadRx] memory allocation failed..\n");
     return;
   }
   
-  rxPacket2(port_num);
+  rxPacket2(port_num, fast_option);
+
   if (packetData[port_num].communication_result == COMM_SUCCESS)
   {
     if (packetData[port_num].error != 0)
+    {
       packetData[port_num].error = (uint8_t)packetData[port_num].rx_packet[PKT_ERROR];
+    }
+
     for (s = 0; s < length; s++)
     {
       packetData[port_num].data_read[s] = packetData[port_num].rx_packet[PKT_PARAMETER0 + 1 + s];
@@ -895,7 +917,7 @@ uint8_t read1ByteRx2(int port_num)
     return 0;
   }
   packetData[port_num].data_read[0] = 0;
-  readRx2(port_num, 1);
+  readRx2(port_num, 1, DISABLE_FAST_OPTION);
   if (packetData[port_num].communication_result == COMM_SUCCESS)
     return packetData[port_num].data_read[0];
   return 0;
@@ -929,7 +951,7 @@ uint16_t read2ByteRx2(int port_num)
   }
   packetData[port_num].data_read[0] = 0;
   packetData[port_num].data_read[1] = 0;
-  readRx2(port_num, 2);
+  readRx2(port_num, 2, DISABLE_FAST_OPTION);
   if (packetData[port_num].communication_result == COMM_SUCCESS)
     return DXL_MAKEWORD(packetData[port_num].data_read[0], packetData[port_num].data_read[1]);
   return 0;
@@ -966,7 +988,7 @@ uint32_t read4ByteRx2(int port_num)
   packetData[port_num].data_read[1] = 0;
   packetData[port_num].data_read[2] = 0;
   packetData[port_num].data_read[3] = 0;
-  readRx2(port_num, 4);
+  readRx2(port_num, 4, DISABLE_FAST_OPTION);
   if (packetData[port_num].communication_result == COMM_SUCCESS)
     return DXL_MAKEDWORD(DXL_MAKEWORD(packetData[port_num].data_read[0], packetData[port_num].data_read[1]), DXL_MAKEWORD(packetData[port_num].data_read[2], packetData[port_num].data_read[3]));
   return 0;
@@ -1183,7 +1205,7 @@ void regWriteTxRx2(int port_num, uint8_t id, uint16_t address, uint16_t length)
   txRxPacket2(port_num);
 }
 
-void syncReadTx2(int port_num, uint16_t start_address, uint16_t data_length, uint16_t param_length)
+void syncReadTx2(int port_num, uint16_t start_address, uint16_t data_length, uint16_t param_length, uint8_t fast_option)
 {
   uint16_t s;
 
@@ -1200,7 +1222,11 @@ void syncReadTx2(int port_num, uint16_t start_address, uint16_t data_length, uin
   packetData[port_num].tx_packet[PKT_ID] = BROADCAST_ID;
   packetData[port_num].tx_packet[PKT_LENGTH_L] = DXL_LOBYTE(param_length + 7); // 7: INST START_ADDR_L START_ADDR_H DATA_LEN_L DATA_LEN_H CRC16_L CRC16_H
   packetData[port_num].tx_packet[PKT_LENGTH_H] = DXL_HIBYTE(param_length + 7); // 7: INST START_ADDR_L START_ADDR_H DATA_LEN_L DATA_LEN_H CRC16_L CRC16_H
-  packetData[port_num].tx_packet[PKT_INSTRUCTION] = INST_SYNC_READ;
+  if (fast_option == ENABLE_FAST_OPTION) {
+    packetData[port_num].tx_packet[PKT_INSTRUCTION] = INST_FAST_SYNC_READ;
+  } else {
+    packetData[port_num].tx_packet[PKT_INSTRUCTION] = INST_SYNC_READ;
+  }
   packetData[port_num].tx_packet[PKT_PARAMETER0 + 0] = DXL_LOBYTE(start_address);
   packetData[port_num].tx_packet[PKT_PARAMETER0 + 1] = DXL_HIBYTE(start_address);
   packetData[port_num].tx_packet[PKT_PARAMETER0 + 2] = DXL_LOBYTE(data_length);

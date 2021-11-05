@@ -138,7 +138,7 @@ void txPacket(int port_num, int protocol_version)
   }
 }
 
-void rxPacket(int port_num, int protocol_version)
+void rxPacket(int port_num, int protocol_version, uint8_t fast_option)
 {
   if (protocol_version == 1)
   {
@@ -146,7 +146,7 @@ void rxPacket(int port_num, int protocol_version)
   }
   else
   {
-    rxPacket2(port_num);
+    rxPacket2(port_num, fast_option);
   }
 }
 
@@ -270,9 +270,15 @@ void readRx(int port_num, int protocol_version, uint16_t length)
   }
   else
   {
-    readRx2(port_num, length);
+    readRx2(port_num, length, DISABLE_FAST_OPTION);
   }
 }
+
+void readFastSyncRx(int port_num, int protocol_version, uint16_t length)
+{
+  readRx2(port_num, length, ENABLE_FAST_OPTION);
+}
+
 void readTxRx(int port_num, int protocol_version, uint8_t id, uint16_t address, uint16_t length)
 {
   if (protocol_version == 1)
@@ -502,7 +508,7 @@ void regWriteTxRx(int port_num, int protocol_version, uint8_t id, uint16_t addre
   }
 }
 
-void syncReadTx(int port_num, int protocol_version, uint16_t start_address, uint16_t data_length, uint16_t param_length)
+void syncReadTx(int port_num, int protocol_version, uint16_t start_address, uint16_t data_length, uint16_t param_length, uint8_t fast_option)
 {
   if (protocol_version == 1)
   {
@@ -510,7 +516,7 @@ void syncReadTx(int port_num, int protocol_version, uint16_t start_address, uint
   }
   else
   {
-    syncReadTx2(port_num, start_address, data_length, param_length);
+    syncReadTx2(port_num, start_address, data_length, param_length, fast_option);
   }
 }
 // syncReadRx   -> GroupSyncRead
