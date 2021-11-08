@@ -39,10 +39,19 @@
 // Use DYNAMIXEL SDK library
 #include "dynamixel_sdk.h"
 
+// Uncomment the definition below when running this example with P series
+// #define USE_DYNAMIXEL_P_SERIES
+
 // Control table address differs by DYNAMIXEL model
-#define ADDR_TORQUE_ENABLE  64
-#define ADDR_GOAL_POSITION  116
-#define ADDR_PRESENT_POSITION  132
+#ifdef USE_DYNAMIXEL_P_SERIES
+  #define ADDR_TORQUE_ENABLE  512
+  #define ADDR_GOAL_POSITION  564
+  #define ADDR_PRESENT_POSITION  580
+#else
+  #define ADDR_TORQUE_ENABLE  64
+  #define ADDR_GOAL_POSITION  116
+  #define ADDR_PRESENT_POSITION  132
+#endif
 
 // Data Byte Length
 #define LEN_GOAL_POSITION  4
@@ -66,8 +75,13 @@
 #define TORQUE_DISABLE  0
 // Minimum & Maximum range of Goal Position.
 // Invalid value range will be ignored. Refer to the product eManual.
-#define DXL_MINIMUM_POSITION_VALUE  0
-#define DXL_MAXIMUM_POSITION_VALUE  1023
+#ifdef USE_DYNAMIXEL_P_SERIES
+  #define DXL_MINIMUM_POSITION_VALUE  0
+  #define DXL_MAXIMUM_POSITION_VALUE  100000
+#else
+  #define DXL_MINIMUM_POSITION_VALUE  0
+  #define DXL_MAXIMUM_POSITION_VALUE  1023
+#endif
 // Moving status flag threshold
 #define DXL_MOVING_STATUS_THRESHOLD  20
 
@@ -166,11 +180,11 @@ int main()
   // Set port baudrate
   if (setBaudRate(port_num, BAUDRATE))
   {
-    printf("Succeeded to change the baudrate!\n");
+    printf("Succeeded to set the baudrate!\n");
   }
   else
   {
-    printf("Failed to change the baudrate!\n");
+    printf("Failed to set the baudrate!\n");
     printf("Press any key to terminate...\n");
     getch();
     return 0;

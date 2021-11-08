@@ -307,7 +307,6 @@ void removeStuffing(uint8_t *packet)
   {
     if (packet[i + PKT_INSTRUCTION] == 0xFD && packet[i + PKT_INSTRUCTION + 1] == 0xFD && packet[i + PKT_INSTRUCTION - 1] == 0xFF && packet[i + PKT_INSTRUCTION - 2] == 0xFF)
     {   // FF FF FD FD
-      printf("\n\n!!!!! STUFFING DETECTED !!!!!\n\n");
       packet_length_out--;
       i++;
     }
@@ -498,9 +497,8 @@ void rxPacket2(int port_num, uint8_t fast_option)
   g_is_using[port_num] = False;
 
   // Fast Sync Read and Fast Bulk Read do not use Byte Stuffing
-  // if (packetData[port_num].communication_result == COMM_SUCCESS &&
-  //   fast_option == DISABLE_FAST_OPTION)
-  if (packetData[port_num].communication_result == COMM_SUCCESS)
+  if (packetData[port_num].communication_result == COMM_SUCCESS &&
+    fast_option == DISABLE_FAST_OPTION)
     {
       removeStuffing(packetData[port_num].rx_packet);
     }

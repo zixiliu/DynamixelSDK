@@ -13,8 +13,9 @@
 // limitations under the License.
 
 // Fast Sync Read Example Environment
+// - Youtube : https://youtu.be/claLIK8omIQ
 //
-// - DYNAMIXEL: X series (except XL-320)
+// - DYNAMIXEL: X series (except XL-320), MX(2.0) series, P series
 //              ID = 1, 2, Baudrate = 57600bps, Protocol 2.0
 // - USB-Serial Interface : U2D2 (DYNAMIXEL Starter Set)
 // - Library: DYNAMIXEL SDK v3.8.1 or later
@@ -35,7 +36,7 @@
 // Use DYNAMIXEL SDK library
 #include "dynamixel_sdk.h"
 
-// Uncomment below definition when running this example with P series
+// Uncomment the definition below when running this example with P series
 // #define USE_DYNAMIXEL_P_SERIES
 
 // Control table address differs by DYNAMIXEL model
@@ -71,8 +72,13 @@
 #define TORQUE_DISABLE  0
 // Minimum & Maximum range of Goal Position.
 // Invalid value range will be ignored. Refer to the product eManual.
-#define DXL_MINIMUM_POSITION_VALUE  0
-#define DXL_MAXIMUM_POSITION_VALUE  1023
+#ifdef USE_DYNAMIXEL_P_SERIES
+  #define DXL_MINIMUM_POSITION_VALUE  0
+  #define DXL_MAXIMUM_POSITION_VALUE  100000
+#else
+  #define DXL_MINIMUM_POSITION_VALUE  0
+  #define DXL_MAXIMUM_POSITION_VALUE  1023
+#endif
 // Moving status flag threshold
 #define DXL_MOVING_STATUS_THRESHOLD  20
 
@@ -140,14 +146,15 @@ int main()
   int groupwrite_num = groupSyncWrite(port_num, PROTOCOL_VERSION, ADDR_GOAL_POSITION, LEN_GOAL_POSITION);
 
   // Initialize GroupSyncRead Structs for Present Position
+  // FasySyncRead shares the data structure with SyncRead
   int groupread_num = groupSyncRead(port_num, PROTOCOL_VERSION, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION);
 
   int index = 0;
-  // Save the communication result
+  // Initialize the communication result
   int dxl_comm_result = COMM_TX_FAIL;
-  // Save the AddParam result
+  // Initialize the AddParam result
   uint8_t dxl_addparam_result = False;
-  // Save the GetParam result
+  // Initialize the GetParam result
   uint8_t dxl_getdata_result = False;
   // Min and Max Goal positions to iterate
   int dxl_goal_position[2] = { DXL_MINIMUM_POSITION_VALUE, DXL_MAXIMUM_POSITION_VALUE };
@@ -171,11 +178,11 @@ int main()
   // Set port baudrate
   if (setBaudRate(port_num, BAUDRATE))
   {
-    printf("Succeeded to change the baudrate!\n");
+    printf("Succeeded to set the baudrate!\n");
   }
   else
   {
-    printf("Failed to change the baudrate!\n");
+    printf("Failed to set the baudrate!\n");
     printf("Press any key to terminate...\n");
     getch();
     return 0;
@@ -215,7 +222,7 @@ int main()
   dxl_addparam_result = groupSyncReadAddParam(groupread_num, DXL1_ID);
   if (dxl_addparam_result != True)
   {
-    fprintf(stderr, "[ID:%03d] groupSyncRead addparam failed", DXL1_ID);
+    fprintf(stderr, "[ID:%03d] FastSyncRead addparam failed", DXL1_ID);
     return 0;
   }
 
@@ -223,7 +230,7 @@ int main()
   dxl_addparam_result = groupSyncReadAddParam(groupread_num, DXL2_ID);
   if (dxl_addparam_result != True)
   {
-    fprintf(stderr, "[ID:%03d] groupSyncRead addparam failed", DXL2_ID);
+    fprintf(stderr, "[ID:%03d] FastSyncRead addparam failed", DXL2_ID);
     return 0;
   }
 
@@ -234,7 +241,11 @@ int main()
       break;
 
     // Add DYNAMIXEL#1 goal position value to the Syncwrite buffer
-    dxl_addparam_result = groupSyncWriteAddParam(groupwrite_num, DXL1_ID, dxl_goal_position[index], LEN_GOAL_POSITION);
+    dxl_addparam_result = groupSyncWriteAddParam(
+      groupwrite_num,
+      DXL1_ID,
+      dxl_goal_position[index],
+      LEN_GOAL_POSITION);
     if (dxl_addparam_result != True)
     {
       fprintf(stderr, "[ID:%03d] groupSyncWrite addparam failed", DXL1_ID);
@@ -242,7 +253,11 @@ int main()
     }
 
     // Add DYNAMIXEL#2 goal position value to the Syncwrite buffer
-    dxl_addparam_result = groupSyncWriteAddParam(groupwrite_num, DXL2_ID, dxl_goal_position[index], LEN_GOAL_POSITION);
+    dxl_addparam_result = groupSyncWriteAddParam(
+      groupwrite_num,
+      DXL2_ID,
+      dxl_goal_position[index],
+      LEN_GOAL_POSITION);
     if (dxl_addparam_result != True)
     {
       fprintf(stderr, "[ID:%03d] groupSyncWrite addparam failed", DXL2_ID);
@@ -260,35 +275,60 @@ int main()
     do
     {
       // SyncRead present position
-      groupSyncReadTxRxPacket(groupread_num);
+      // Use a dedicated function "groupFastSyncReadTxRxPacket" to FastSyncRead from DYNAMIXEL
+      groupFastSyncReadTxRxPacket(groupread_num);
       if ((dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
         printf("%s\n", getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
 
       // Check if groupsyncread data of DYNAMIXEL#1 is available
-      dxl_getdata_result = groupSyncReadIsAvailable(groupread_num, DXL1_ID, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION);
+      dxl_getdata_result = groupSyncReadIsAvailable(
+        groupread_num,
+        DXL1_ID,
+        ADDR_PRESENT_POSITION,
+        LEN_PRESENT_POSITION);
       if (dxl_getdata_result != True)
       {
-        fprintf(stderr, "[ID:%03d] groupSyncRead getdata failed", DXL1_ID);
+        fprintf(stderr, "[ID:%03d] groupFastSyncRead getdata failed", DXL1_ID);
         return 0;
       }
 
       // Check if groupsyncread data of DYNAMIXEL#2 is available
-      dxl_getdata_result = groupSyncReadIsAvailable(groupread_num, DXL2_ID, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION);
+      dxl_getdata_result = groupSyncReadIsAvailable(
+        groupread_num,
+        DXL2_ID,
+        ADDR_PRESENT_POSITION,
+        LEN_PRESENT_POSITION);
       if (dxl_getdata_result != True)
       {
-        fprintf(stderr, "[ID:%03d] groupSyncRead getdata failed", DXL2_ID);
+        fprintf(stderr, "[ID:%03d] groupFastSyncRead getdata failed", DXL2_ID);
         return 0;
       }
 
       // Get DYNAMIXEL#1 present position value
-      dxl1_present_position = groupSyncReadGetData(groupread_num, DXL1_ID, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION);
+      dxl1_present_position = groupSyncReadGetData(
+        groupread_num,
+        DXL1_ID,
+        ADDR_PRESENT_POSITION,
+        LEN_PRESENT_POSITION);
 
       // Get DYNAMIXEL#2 present position value
-      dxl2_present_position = groupSyncReadGetData(groupread_num, DXL2_ID, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION);
+      dxl2_present_position = groupSyncReadGetData(
+        groupread_num,
+        DXL2_ID,
+        ADDR_PRESENT_POSITION,
+        LEN_PRESENT_POSITION);
 
-      printf("[ID:%03d] GoalPos:%03d  PresPos:%03d\t[ID:%03d] GoalPos:%03d  PresPos:%03d\n", DXL1_ID, dxl_goal_position[index], dxl1_present_position, DXL2_ID, dxl_goal_position[index], dxl2_present_position);
+      printf("[ID:%03d] GoalPos:%03d  PresPos:%03d\t[ID:%03d] GoalPos:%03d  PresPos:%03d\n",
+        DXL1_ID,
+        dxl_goal_position[index],
+        dxl1_present_position,
+        DXL2_ID,
+        dxl_goal_position[index],
+        dxl2_present_position);
 
-    } while ((abs(dxl_goal_position[index] - dxl1_present_position) > DXL_MOVING_STATUS_THRESHOLD) || (abs(dxl_goal_position[index] - dxl2_present_position) > DXL_MOVING_STATUS_THRESHOLD));
+    } while (
+      (abs(dxl_goal_position[index] - dxl1_present_position) > DXL_MOVING_STATUS_THRESHOLD) ||
+      (abs(dxl_goal_position[index] - dxl2_present_position) > DXL_MOVING_STATUS_THRESHOLD));
 
     // switch goal position
     if (index == 0)
