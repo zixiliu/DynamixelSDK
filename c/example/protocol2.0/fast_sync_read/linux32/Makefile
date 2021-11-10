@@ -1,5 +1,5 @@
 ##################################################
-# PROJECT: DXL Protocol 2.0 SyncReadWrite Example Makefile
+# PROJECT: DXL Protocol 2.0 FastSyncRead Example Makefile
 # AUTHOR : ROBOTIS Ltd.
 ##################################################
 

@@ -1,5 +1,5 @@
 ##################################################
-# PROJECT: DXL Protocol 2.0 FastSyncRead Example Makefile
+# PROJECT: DXL Protocol 2.0 fast_sync_read Example Makefile
 # AUTHOR : ROBOTIS Ltd.
 ##################################################
 
@@ -41,13 +41,13 @@ LNKFLAGS    = $(CXFLAGS) #-Wl,-rpath,$(DIR_THOR)/lib
 # Core components (all of these are likely going to be needed)
 #---------------------------------------------------------------------
 INCLUDES   += -I$(DIR_DXL)/include/dynamixel_sdk
-LIBRARIES  += -ldxl_sbc_c
+LIBRARIES  += -ldxl_sbc_cpp
 LIBRARIES  += -lrt
 
 #---------------------------------------------------------------------
 # Files
 #---------------------------------------------------------------------
-SOURCES = ../fast_sync_read.c \
+SOURCES = ../fast_sync_read.cpp \
     # *** OTHER SOURCES GO HERE ***
 
 OBJECTS  = $(addsuffix .o,$(addprefix $(DIR_OBJS)/,$(basename $(notdir $(SOURCES)))))

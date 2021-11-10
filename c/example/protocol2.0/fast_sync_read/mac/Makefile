@@ -1,5 +1,5 @@
 ##################################################
-# PROJECT: DXL Protocol 1.0 Ping Example Makefile
+# PROJECT: DXL Protocol 1.0 FastSyncRead Example Makefile
 # AUTHOR : ROBOTIS Ltd.
 ##################################################
 

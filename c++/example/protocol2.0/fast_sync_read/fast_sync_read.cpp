@@ -1,29 +1,27 @@
-/*******************************************************************************
-* Copyright 2017 ROBOTIS CO., LTD.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*******************************************************************************/
+// Copyright 2021 ROBOTIS CO., LTD.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-/* Author: Ryu Woon Jung (Leon) */
+// Fast Sync Read Example Environment
+// - Youtube : https://youtu.be/claLIK8omIQ
+//
+// - DYNAMIXEL: X series (except XL-320), MX(2.0) series, P series
+//              ID = 1, 2, Baudrate = 57600bps, Protocol 2.0
+// - USB-Serial Interface : U2D2 (DYNAMIXEL Starter Set)
+// - Library: DYNAMIXEL SDK v3.8.1 or later
+//
+// Author: Will Son
 
-//
-// *********     Sync Read and Sync Write Example      *********
-//
-//
-// Available Dynamixel model on this example : All models using Protocol 2.0
-// This example is tested with two Dynamixel PRO 54-200, and an USB2DYNAMIXEL
-// Be sure that Dynamixel PRO properties are already set as %% ID : 1 / Baudnum : 1 (Baudrate : 57600)
-//
 
 #if defined(__linux__) || defined(__APPLE__)
 #include <fcntl.h>
@@ -155,6 +153,7 @@ int main()
     LEN_GOAL_POSITION);
 
   // Initialize Groupsyncread instance for Present Position
+  // FasySyncRead inherites an identical class for SyncRead
   dynamixel::GroupSyncRead groupSyncRead(
     portHandler,
     packetHandler,
@@ -191,17 +190,17 @@ int main()
   // Set port baudrate
   if (portHandler->setBaudRate(BAUDRATE))
   {
-    printf("Succeeded to change the baudrate!\n");
+    printf("Succeeded to set the baudrate!\n");
   }
   else
   {
-    printf("Failed to change the baudrate!\n");
+    printf("Failed to set the baudrate!\n");
     printf("Press any key to terminate...\n");
     getch();
     return 0;
   }
 
-  // Enable Dynamixel#1 Torque
+  // Enable DYNAMIXEL#1 Torque
   dxl_comm_result = packetHandler->write1ByteTxRx(
     portHandler,
     DXL1_ID,
@@ -218,10 +217,10 @@ int main()
   }
   else
   {
-    printf("Dynamixel#%d has been successfully connected \n", DXL1_ID);
+    printf("DYNAMIXEL#%d has been successfully connected \n", DXL1_ID);
   }
 
-  // Enable Dynamixel#2 Torque
+  // Enable DYNAMIXEL#2 Torque
   dxl_comm_result = packetHandler->write1ByteTxRx(
     portHandler,
     DXL2_ID,
@@ -238,7 +237,7 @@ int main()
   }
   else
   {
-    printf("Dynamixel#%d has been successfully connected \n", DXL2_ID);
+    printf("DYNAMIXEL#%d has been successfully connected \n", DXL2_ID);
   }
 
   // Add parameter storage for DYNAMIXEL#1 present position value
@@ -269,7 +268,7 @@ int main()
     param_goal_position[2] = DXL_LOBYTE(DXL_HIWORD(dxl_goal_position[index]));
     param_goal_position[3] = DXL_HIBYTE(DXL_HIWORD(dxl_goal_position[index]));
 
-    // Add Dynamixel#1 goal position value to the Syncwrite storage
+    // Add DYNAMIXEL#1 goal position value to the Syncwrite storage
     dxl_addparam_result = groupSyncWrite.addParam(DXL1_ID, param_goal_position);
     if (dxl_addparam_result != true)
     {
@@ -277,7 +276,7 @@ int main()
       return 0;
     }
 
-    // Add Dynamixel#2 goal position value to the Syncwrite parameter storage
+    // Add DYNAMIXEL#2 goal position value to the Syncwrite parameter storage
     dxl_addparam_result = groupSyncWrite.addParam(DXL2_ID, param_goal_position);
     if (dxl_addparam_result != true)
     {
@@ -296,21 +295,21 @@ int main()
     do
     {
       // Syncread present position
-      dxl_comm_result = groupSyncRead.txRxPacket();
+      dxl_comm_result = groupSyncRead.fastSyncReadTxRxPacket();
       if (dxl_comm_result != COMM_SUCCESS)
       {
         printf("%s\n", packetHandler->getTxRxResult(dxl_comm_result));
       }
-      else if (groupSyncRead.getError(DXL1_ID, &dxl_error))
+      if (groupSyncRead.getError(DXL1_ID, &dxl_error))
       {
         printf("[ID:%03d] %s\n", DXL1_ID, packetHandler->getRxPacketError(dxl_error));
       }
-      else if (groupSyncRead.getError(DXL2_ID, &dxl_error))
+      if (groupSyncRead.getError(DXL2_ID, &dxl_error))
       {
         printf("[ID:%03d] %s\n", DXL2_ID, packetHandler->getRxPacketError(dxl_error));
       }
 
-      // Check if groupsyncread data of Dynamixel#1 is available
+      // Check if groupsyncread data of DYNAMIXEL#1 is available
       dxl_getdata_result = groupSyncRead.isAvailable(
         DXL1_ID,
         ADDR_PRESENT_POSITION,
@@ -321,7 +320,7 @@ int main()
         return 0;
       }
 
-      // Check if groupsyncread data of Dynamixel#2 is available
+      // Check if groupsyncread data of DYNAMIXEL#2 is available
       dxl_getdata_result = groupSyncRead.isAvailable(
         DXL2_ID,
         ADDR_PRESENT_POSITION,
@@ -332,13 +331,13 @@ int main()
         return 0;
       }
 
-      // Get Dynamixel#1 present position value
+      // Get DYNAMIXEL#1 present position value
       dxl1_present_position = groupSyncRead.getData(
         DXL1_ID,
         ADDR_PRESENT_POSITION,
         LEN_PRESENT_POSITION);
 
-      // Get Dynamixel#2 present position value
+      // Get DYNAMIXEL#2 present position value
       dxl2_present_position = groupSyncRead.getData(
         DXL2_ID,
         ADDR_PRESENT_POSITION,
@@ -367,7 +366,7 @@ int main()
     }
   }
 
-  // Disable Dynamixel#1 Torque
+  // Disable DYNAMIXEL#1 Torque
   dxl_comm_result = packetHandler->write1ByteTxRx(
     portHandler,
     DXL1_ID,
@@ -383,7 +382,7 @@ int main()
     printf("%s\n", packetHandler->getRxPacketError(dxl_error));
   }
 
-  // Disable Dynamixel#2 Torque
+  // Disable DYNAMIXEL#2 Torque
   dxl_comm_result = packetHandler->write1ByteTxRx(
     portHandler,
     DXL2_ID,
