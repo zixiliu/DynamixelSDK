@@ -138,7 +138,8 @@ void txPacket(int port_num, int protocol_version)
   }
 }
 
-void rxPacket(int port_num, int protocol_version, uint8_t fast_option)
+
+void rxPacket(int port_num, int protocol_version)
 {
   if (protocol_version == 1)
   {
@@ -146,7 +147,19 @@ void rxPacket(int port_num, int protocol_version, uint8_t fast_option)
   }
   else
   {
-    rxPacket2(port_num, fast_option);
+    rxPacket2(port_num);
+  }
+}
+
+void fastReadRxPacket(int port_num, int protocol_version, uint8_t fast_option)
+{
+  if (protocol_version == 1)
+  {
+    rxPacket1(port_num);
+  }
+  else
+  {
+    fastRxPacket2(port_num, fast_option);
   }
 }
 
@@ -270,13 +283,13 @@ void readRx(int port_num, int protocol_version, uint16_t length)
   }
   else
   {
-    readRx2(port_num, length, DISABLE_FAST_OPTION);
+    fastReadRx2(port_num, length, DISABLE_FAST_OPTION);
   }
 }
 
 void readFastSyncRx(int port_num, int protocol_version, uint16_t length)
 {
-  readRx2(port_num, length, ENABLE_FAST_OPTION);
+  fastReadRx2(port_num, length, ENABLE_FAST_OPTION);
 }
 
 void readTxRx(int port_num, int protocol_version, uint8_t id, uint16_t address, uint16_t length)
@@ -508,7 +521,7 @@ void regWriteTxRx(int port_num, int protocol_version, uint8_t id, uint16_t addre
   }
 }
 
-void syncReadTx(int port_num, int protocol_version, uint16_t start_address, uint16_t data_length, uint16_t param_length, uint8_t fast_option)
+void syncReadTx(int port_num, int protocol_version, uint16_t start_address, uint16_t data_length, uint16_t param_length)
 {
   if (protocol_version == 1)
   {
@@ -516,7 +529,19 @@ void syncReadTx(int port_num, int protocol_version, uint16_t start_address, uint
   }
   else
   {
-    syncReadTx2(port_num, start_address, data_length, param_length, fast_option);
+    syncReadTx2(port_num, start_address, data_length, param_length);
+  }
+}
+
+void fastSyncReadTx(int port_num, int protocol_version, uint16_t start_address, uint16_t data_length, uint16_t param_length, uint8_t fast_option)
+{
+  if (protocol_version == 1)
+  {
+    syncReadTx1(port_num, start_address, data_length, param_length);
+  }
+  else
+  {
+    fastSyncReadTx2(port_num, start_address, data_length, param_length, fast_option);
   }
 }
 // syncReadRx   -> GroupSyncRead

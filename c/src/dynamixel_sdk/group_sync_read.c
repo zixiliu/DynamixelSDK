@@ -228,7 +228,7 @@ void groupSyncReadTxPacket(int group_num)
   if (groupData[group_num].is_param_changed == True)
     groupSyncReadMakeParam(group_num);
 
-  syncReadTx(groupData[group_num].port_num,
+  fastSyncReadTx(groupData[group_num].port_num,
     groupData[group_num].protocol_version,
     groupData[group_num].start_address,
     groupData[group_num].data_length,
@@ -255,7 +255,7 @@ void groupFastSyncReadTxPacket(int group_num)
   if (groupData[group_num].is_param_changed == True)
     groupSyncReadMakeParam(group_num);
 
-  syncReadTx(groupData[group_num].port_num,
+  fastSyncReadTx(groupData[group_num].port_num,
     groupData[group_num].protocol_version,
     groupData[group_num].start_address,
     groupData[group_num].data_length,
