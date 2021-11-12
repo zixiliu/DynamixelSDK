@@ -79,9 +79,9 @@ else:
 
 # Set port baudrate
 if portHandler.setBaudRate(BAUDRATE):
-    print("Succeeded to change the baudrate")
+    print("Succeeded to set the baudrate")
 else:
-    print("Failed to change the baudrate")
+    print("Failed to set the baudrate")
     print("Press any key to terminate...")
     getch()
     quit()

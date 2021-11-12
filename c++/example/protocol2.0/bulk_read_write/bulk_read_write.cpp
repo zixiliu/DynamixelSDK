@@ -53,8 +53,8 @@
 #define PROTOCOL_VERSION                2.0                 // See which protocol version is used in the Dynamixel
 
 // Default setting
-#define DXL1_ID                         1                   // Dynamixel#1 ID: 1
-#define DXL2_ID                         2                   // Dynamixel#2 ID: 2
+#define DXL1_ID                         1                   // DYNAMIXEL#1 ID: 1
+#define DXL2_ID                         2                   // DYNAMIXEL#2 ID: 2
 #define BAUDRATE                        57600
 #define DEVICENAME                      "/dev/ttyUSB0"      // Check which port is being used on your controller
                                                             // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
@@ -171,7 +171,7 @@ int main()
     return 0;
   }
 
-  // Enable Dynamixel#1 Torque
+  // Enable DYNAMIXEL#1 Torque
   dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, DXL1_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_ENABLE, &dxl_error);
   if (dxl_comm_result != COMM_SUCCESS)
   {
@@ -183,10 +183,10 @@ int main()
   }
   else
   {
-    printf("Dynamixel#%d has been successfully connected \n", DXL1_ID);
+    printf("DYNAMIXEL#%d has been successfully connected \n", DXL1_ID);
   }
 
-  // Enable Dynamixel#2 Torque
+  // Enable DYNAMIXEL#2 Torque
   dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, DXL2_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_ENABLE, &dxl_error);
   if (dxl_comm_result != COMM_SUCCESS)
   {
@@ -198,10 +198,10 @@ int main()
   }
   else
   {
-    printf("Dynamixel#%d has been successfully connected \n", DXL2_ID);
+    printf("DYNAMIXEL#%d has been successfully connected \n", DXL2_ID);
   }
 
-  // Add parameter storage for Dynamixel#1 present position
+  // Add parameter storage for DYNAMIXEL#1 present position
   dxl_addparam_result = groupBulkRead.addParam(DXL1_ID, ADDR_PRO_PRESENT_POSITION, LEN_PRO_PRESENT_POSITION);
   if (dxl_addparam_result != true)
   {
@@ -209,7 +209,7 @@ int main()
     return 0;
   }
 
-  // Add parameter storage for Dynamixel#2 LED value
+  // Add parameter storage for DYNAMIXEL#2 LED value
   dxl_addparam_result = groupBulkRead.addParam(DXL2_ID, ADDR_PRO_LED_RED, LEN_PRO_LED_RED);
   if (dxl_addparam_result != true)
   {
@@ -229,7 +229,7 @@ int main()
     param_goal_position[2] = DXL_LOBYTE(DXL_HIWORD(dxl_goal_position[index]));
     param_goal_position[3] = DXL_HIBYTE(DXL_HIWORD(dxl_goal_position[index]));
 
-    // Add parameter storage for Dynamixel#1 goal position
+    // Add parameter storage for DYNAMIXEL#1 goal position
     dxl_addparam_result = groupBulkWrite.addParam(DXL1_ID, ADDR_PRO_GOAL_POSITION, LEN_PRO_GOAL_POSITION, param_goal_position);
     if (dxl_addparam_result != true)
     {
@@ -237,7 +237,7 @@ int main()
       return 0;
     }
 
-    // Add parameter storage for Dynamixel#2 LED value
+    // Add parameter storage for DYNAMIXEL#2 LED value
     dxl_addparam_result = groupBulkWrite.addParam(DXL2_ID, ADDR_PRO_LED_RED, LEN_PRO_LED_RED, &dxl_led_value[index]);
     if (dxl_addparam_result != true)
     {
@@ -269,7 +269,7 @@ int main()
         printf("[ID:%03d] %s\n", DXL2_ID, packetHandler->getRxPacketError(dxl_error));
       }
 
-      // Check if groupbulkread data of Dynamixel#1 is available
+      // Check if groupbulkread data of DYNAMIXEL#1 is available
       dxl_getdata_result = groupBulkRead.isAvailable(DXL1_ID, ADDR_PRO_PRESENT_POSITION, LEN_PRO_PRESENT_POSITION);
       if (dxl_getdata_result != true)
       {
@@ -277,7 +277,7 @@ int main()
         return 0;
       }
 
-      // Check if groupbulkread data of Dynamixel#2 is available
+      // Check if groupbulkread data of DYNAMIXEL#2 is available
       dxl_getdata_result = groupBulkRead.isAvailable(DXL2_ID, ADDR_PRO_LED_RED, LEN_PRO_LED_RED);
       if (dxl_getdata_result != true)
       {
@@ -306,7 +306,7 @@ int main()
     }
   }
 
-  // Disable Dynamixel#1 Torque
+  // Disable DYNAMIXEL#1 Torque
   dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, DXL1_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_DISABLE, &dxl_error);
   if (dxl_comm_result != COMM_SUCCESS)
   {
@@ -317,7 +317,7 @@ int main()
     printf("%s\n", packetHandler->getRxPacketError(dxl_error));
   }
 
-  // Disable Dynamixel#2 Torque
+  // Disable DYNAMIXEL#2 Torque
   dxl_comm_result = packetHandler->write1ByteTxRx(portHandler, DXL2_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_DISABLE, &dxl_error);
   if (dxl_comm_result != COMM_SUCCESS)
   {

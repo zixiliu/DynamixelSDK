@@ -121,7 +121,7 @@ public class BulkReadWrite
       return;
     }
 
-    // Enable Dynamixel#1 Torque
+    // Enable DYNAMIXEL#1 Torque
     dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL1_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_ENABLE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
     {
@@ -133,10 +133,10 @@ public class BulkReadWrite
     }
     else
     {
-      System.out.printf("Dynamixel#%d has been successfully connected\n", DXL1_ID);
+      System.out.printf("DYNAMIXEL#%d has been successfully connected\n", DXL1_ID);
     }
 
-    // Enable Dynamixel#2 Torque
+    // Enable DYNAMIXEL#2 Torque
     dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL2_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_ENABLE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
     {
@@ -148,10 +148,10 @@ public class BulkReadWrite
     }
     else
     {
-      System.out.printf("Dynamixel#%d has been successfully connected\n", DXL2_ID);
+      System.out.printf("DYNAMIXEL#%d has been successfully connected\n", DXL2_ID);
     }
 
-    // Add parameter storage for Dynamixel#1 present position value
+    // Add parameter storage for DYNAMIXEL#1 present position value
     dxl_addparam_result = dynamixel.groupBulkReadAddParam(group_num, DXL1_ID, ADDR_PRO_PRESENT_POSITION, LEN_PRO_PRESENT_POSITION);
     if (dxl_addparam_result != true)
     {
@@ -159,7 +159,7 @@ public class BulkReadWrite
       return;
     }
 
-    // Add parameter storage for Dynamixel#2 present moving value
+    // Add parameter storage for DYNAMIXEL#2 present moving value
     dxl_addparam_result = dynamixel.groupBulkReadAddParam(group_num, DXL2_ID, ADDR_PRO_LED_RED, LEN_PRO_LED_RED);
     if (dxl_addparam_result != true)
     {
@@ -173,7 +173,7 @@ public class BulkReadWrite
       if(scanner.nextLine().equals(KEY_FOR_ESCAPE))
         break;
 
-      // Add parameter storage for Dynamixel#1 goal position
+      // Add parameter storage for DYNAMIXEL#1 goal position
       dxl_addparam_result = dynamixel.groupBulkWriteAddParam(groupwrite_num, DXL1_ID, ADDR_PRO_GOAL_POSITION, LEN_PRO_GOAL_POSITION, dxl_goal_position[index], LEN_PRO_GOAL_POSITION);
       if (dxl_addparam_result != true)
       {
@@ -181,7 +181,7 @@ public class BulkReadWrite
         return;
       }
 
-      // Add parameter storage for Dynamixel#2 LED value
+      // Add parameter storage for DYNAMIXEL#2 LED value
       dxl_addparam_result = dynamixel.groupBulkWriteAddParam(groupwrite_num, DXL2_ID, ADDR_PRO_LED_RED, LEN_PRO_LED_RED, dxl_led_value[index], LEN_PRO_LED_RED);
       if (dxl_addparam_result != true)
       {
@@ -218,10 +218,10 @@ public class BulkReadWrite
           return;
         }
 
-        // Get Dynamixel#1 present position value
+        // Get DYNAMIXEL#1 present position value
         dxl1_present_position = dynamixel.groupBulkReadGetData(group_num, DXL1_ID, ADDR_PRO_PRESENT_POSITION, LEN_PRO_PRESENT_POSITION);
 
-        // Get Dynamixel#2 moving status value
+        // Get DYNAMIXEL#2 moving status value
         dxl2_led_value_read = (short)dynamixel.groupBulkReadGetData(group_num, DXL2_ID, ADDR_PRO_LED_RED, LEN_PRO_LED_RED);
 
 
@@ -240,7 +240,7 @@ public class BulkReadWrite
       }
     }
 
-    // Disable Dynamixel#1 Torque
+    // Disable DYNAMIXEL#1 Torque
     dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL1_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_DISABLE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
     {
@@ -251,7 +251,7 @@ public class BulkReadWrite
       System.out.println(dynamixel.getRxPacketError(PROTOCOL_VERSION, dxl_error));
     }
 
-    // Disable Dynamixel#2 Torque
+    // Disable DYNAMIXEL#2 Torque
     dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL2_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_DISABLE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
     {

@@ -61,8 +61,8 @@ LEN_PRO_PRESENT_POSITION    = 4;
 PROTOCOL_VERSION            = 2.0;          % See which protocol version is used in the Dynamixel
 
 % Default setting
-DXL1_ID                     = 1;            % Dynamixel#1 ID: 1
-DXL2_ID                     = 2;            % Dynamixel#2 ID: 2
+DXL1_ID                     = 1;            % DYNAMIXEL#1 ID: 1
+DXL2_ID                     = 2;            % DYNAMIXEL#2 ID: 2
 BAUDRATE                    = 57600;
 DEVICENAME                  = 'COM1';       % Check which port is being used on your controller
                                             % ex) Windows: 'COM1'   Linux: '/dev/ttyUSB0' Mac: '/dev/tty.usbserial-*'
@@ -125,7 +125,7 @@ else
 end
 
 
-% Enable Dynamixel#1 Torque
+% Enable DYNAMIXEL#1 Torque
 write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL1_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_ENABLE);
 dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
 dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
@@ -137,7 +137,7 @@ else
     fprintf('Dynamixel #%d has been successfully connected \n', DXL1_ID);
 end
 
-% Enable Dynamixel#2 Torque
+% Enable DYNAMIXEL#2 Torque
 write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL2_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_ENABLE);
 dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
 dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
@@ -149,14 +149,14 @@ else
     fprintf('Dynamixel #%d has been successfully connected \n', DXL2_ID);
 end
 
-% Add parameter storage for Dynamixel#1 present position value
+% Add parameter storage for DYNAMIXEL#1 present position value
 dxl_addparam_result = groupSyncReadAddParam(groupread_num, DXL1_ID);
 if dxl_addparam_result ~= true
   fprintf('[ID:%03d] groupSyncRead addparam failed', DXL1_ID);
   return;
 end
 
-% Add parameter storage for Dynamixel#2 present position value
+% Add parameter storage for DYNAMIXEL#2 present position value
 dxl_addparam_result = groupSyncReadAddParam(groupread_num, DXL2_ID);
 if dxl_addparam_result ~= true
   fprintf('[ID:%03d] groupSyncRead addparam failed', DXL2_ID);
@@ -169,14 +169,14 @@ while 1
         break;
     end
 
-    % Add Dynamixel#1 goal position value to the Syncwrite storage
+    % Add DYNAMIXEL#1 goal position value to the Syncwrite storage
     dxl_addparam_result = groupSyncWriteAddParam(groupwrite_num, DXL1_ID, typecast(int32(dxl_goal_position(index)), 'uint32'), LEN_PRO_GOAL_POSITION);
     if dxl_addparam_result ~= true
         fprintf('[ID:%03d] groupSyncWrite addparam failed', DXL1_ID);
         return;
     end
 
-    % Add Dynamixel#2 goal position value to the Syncwrite parameter storage
+    % Add DYNAMIXEL#2 goal position value to the Syncwrite parameter storage
     dxl_addparam_result = groupSyncWriteAddParam(groupwrite_num, DXL2_ID, typecast(int32(dxl_goal_position(index)), 'uint32'), LEN_PRO_GOAL_POSITION);
     if dxl_addparam_result ~= true
         fprintf('[ID:%03d] groupSyncWrite addparam failed', DXL2_ID);
@@ -201,24 +201,24 @@ while 1
             fprintf('%s\n', getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
         end
 
-        % Check if groupsyncread data of Dynamixel#1 is available
+        % Check if groupsyncread data of DYNAMIXEL#1 is available
         dxl_getdata_result = groupSyncReadIsAvailable(groupread_num, DXL1_ID, ADDR_PRO_PRESENT_POSITION, LEN_PRO_PRESENT_POSITION);
         if dxl_getdata_result ~= true
           fprintf('[ID:%03d] groupSyncRead getdata failed', DXL1_ID);
           return;
         end
 
-        % Check if groupsyncread data of Dynamixel#2 is available
+        % Check if groupsyncread data of DYNAMIXEL#2 is available
         dxl_getdata_result = groupSyncReadIsAvailable(groupread_num, DXL2_ID, ADDR_PRO_PRESENT_POSITION, LEN_PRO_PRESENT_POSITION);
         if dxl_getdata_result ~= true
           fprintf('[ID:%03d] groupSyncRead getdata failed', DXL1_ID);
           return;
         end
 
-        % Get Dynamixel#1 present position value
+        % Get DYNAMIXEL#1 present position value
         dxl1_present_position = groupSyncReadGetData(groupread_num, DXL1_ID, ADDR_PRO_PRESENT_POSITION, LEN_PRO_PRESENT_POSITION);
 
-        % Get Dynamixel#2 present position value
+        % Get DYNAMIXEL#2 present position value
         dxl2_present_position = groupSyncReadGetData(groupread_num, DXL2_ID, ADDR_PRO_PRESENT_POSITION, LEN_PRO_PRESENT_POSITION);
 
         fprintf('[ID:%03d] GoalPos:%03d  PresPos:%03d\t[ID:%03d] GoalPos:%03d  PresPos:%03d\n', DXL1_ID, dxl_goal_position(index), typecast(uint32(dxl1_present_position), 'int32'), DXL2_ID, dxl_goal_position(index), typecast(uint32(dxl2_present_position), 'int32'));
@@ -237,7 +237,7 @@ while 1
 end
 
 
-% Disable Dynamixel#1 Torque
+% Disable DYNAMIXEL#1 Torque
 write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL1_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_DISABLE);
 dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
 dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
@@ -247,7 +247,7 @@ elseif dxl_error ~= 0
     fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
 end
 
-% Disable Dynamixel#2 Torque
+% Disable DYNAMIXEL#2 Torque
 write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL2_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_DISABLE);
 dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
 dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);

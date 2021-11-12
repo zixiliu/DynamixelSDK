@@ -310,7 +310,7 @@ int Protocol2PacketHandler::rxPacket(PortHandler *port, uint8_t *rxpacket, bool 
 
   uint16_t rx_length     = 0;
   uint16_t wait_length   = 11; // minimum length (HEADER0 HEADER1 HEADER2 RESERVED ID LENGTH_L LENGTH_H INST ERROR CRC16_L CRC16_H)
-  uint8_t packet_id = 0xFC;
+  uint8_t packet_id = MAX_ID;
   if (fast_option == true) {
     packet_id = BROADCAST_ID;
   }

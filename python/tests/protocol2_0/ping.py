@@ -25,8 +25,7 @@
 #    - DYNAMIXEL Starter Set (U2D2, U2D2 PHB, 12V SMPS)
 #  How to use the example :
 #    - Select the DYNAMIXEL in use at the MY_DXL in the example code. 
-#    - Build and Run from proper architecture subdirectory.
-#    - For ARM based SBCs such as Raspberry Pi, use linux_sbc subdirectory to build and run.
+#    - Run from a proper Protocol version subdirectory.
 #    - https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_sdk/overview/
 #  Author: Ryu Woon Jung (Leon)
 #  Maintainer : Zerom, Will Son
@@ -88,9 +87,9 @@ else:
 
 # Set port baudrate
 if portHandler.setBaudRate(BAUDRATE):
-    print("Succeeded to change the baudrate")
+    print("Succeeded to set the baudrate")
 else:
-    print("Failed to change the baudrate")
+    print("Failed to set the baudrate")
     print("Press any key to terminate...")
     getch()
     quit()

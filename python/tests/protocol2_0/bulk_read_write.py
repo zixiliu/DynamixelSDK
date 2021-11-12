@@ -24,8 +24,7 @@
 #    - DYNAMIXEL Starter Set (U2D2, U2D2 PHB, 12V SMPS)
 #  How to use the example :
 #    - Select the DYNAMIXEL in use at the MY_DXL in the example code. 
-#    - Build and Run from proper architecture subdirectory.
-#    - For ARM based SBCs such as Raspberry Pi, use linux_sbc subdirectory to build and run.
+#    - Run from a proper Protocol version subdirectory.
 #    - https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_sdk/overview/
 #  Author: Ryu Woon Jung (Leon)
 #  Maintainer : Zerom, Will Son
@@ -54,7 +53,7 @@ from dynamixel_sdk import *                    # Uses Dynamixel SDK library
 
 #********* DYNAMIXEL Model definition *********
 #***** (Use only one definition at a time) *****
-MY_DXL = 'X_SERIES'       # X330 (5.0 V recommended), X430, X540, 2X430
+MY_DXL = 'X_SERIES'       # X330, X430, X540, 2X430
 # MY_DXL = 'MX_SERIES'    # MX series with 2.0 firmware update.
 # MY_DXL = 'PRO_SERIES'   # H54, H42, M54, M42, L54, L42
 # MY_DXL = 'PRO_A_SERIES' # PRO series with (A) firmware update.
@@ -100,8 +99,8 @@ elif MY_DXL == 'P_SERIES' or MY_DXL == 'PRO_A_SERIES':
 PROTOCOL_VERSION            = 2.0
 
 # Make sure that each DYNAMIXEL ID should have unique ID.
-DXL1_ID                     = 1                 # Dynamixel#1 ID : 1
-DXL2_ID                     = 2                 # Dynamixel#1 ID : 2
+DXL1_ID                     = 1                 # DYNAMIXEL#1 ID : 1
+DXL2_ID                     = 2                 # DYNAMIXEL#1 ID : 2
 
 # Use the actual port assigned to the U2D2.
 # ex) Windows: "COM*", Linux: "/dev/ttyUSB*", Mac: "/dev/tty.usbserial-*"
@@ -143,39 +142,39 @@ else:
 
 # Set port baudrate
 if portHandler.setBaudRate(BAUDRATE):
-    print("Succeeded to change the baudrate")
+    print("Succeeded to set the baudrate")
 else:
-    print("Failed to change the baudrate")
+    print("Failed to set the baudrate")
     print("Press any key to terminate...")
     getch()
     quit()
 
 
-# Enable Dynamixel#1 Torque
+# Enable DYNAMIXEL#1 Torque
 dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL1_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
 if dxl_comm_result != COMM_SUCCESS:
     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
 elif dxl_error != 0:
     print("%s" % packetHandler.getRxPacketError(dxl_error))
 else:
-    print("Dynamixel#%d has been successfully connected" % DXL1_ID)
+    print("DYNAMIXEL#%d has been successfully connected" % DXL1_ID)
 
-# Enable Dynamixel#2 Torque
+# Enable DYNAMIXEL#2 Torque
 dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL2_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
 if dxl_comm_result != COMM_SUCCESS:
     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
 elif dxl_error != 0:
     print("%s" % packetHandler.getRxPacketError(dxl_error))
 else:
-    print("Dynamixel#%d has been successfully connected" % DXL2_ID)
+    print("DYNAMIXEL#%d has been successfully connected" % DXL2_ID)
 
-# Add parameter storage for Dynamixel#1 present position
+# Add parameter storage for DYNAMIXEL#1 present position
 dxl_addparam_result = groupBulkRead.addParam(DXL1_ID, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION)
 if dxl_addparam_result != True:
     print("[ID:%03d] groupBulkRead addparam failed" % DXL1_ID)
     quit()
 
-# Add parameter storage for Dynamixel#2 LED value
+# Add parameter storage for DYNAMIXEL#2 LED value
 dxl_addparam_result = groupBulkRead.addParam(DXL2_ID, ADDR_LED_RED, LEN_LED_RED)
 if dxl_addparam_result != True:
     print("[ID:%03d] groupBulkRead addparam failed" % DXL2_ID)
@@ -189,13 +188,13 @@ while 1:
     # Allocate goal position value into byte array
     param_goal_position = [DXL_LOBYTE(DXL_LOWORD(dxl_goal_position[index])), DXL_HIBYTE(DXL_LOWORD(dxl_goal_position[index])), DXL_LOBYTE(DXL_HIWORD(dxl_goal_position[index])), DXL_HIBYTE(DXL_HIWORD(dxl_goal_position[index]))]
 
-    # Add Dynamixel#1 goal position value to the Bulkwrite parameter storage
+    # Add DYNAMIXEL#1 goal position value to the Bulkwrite parameter storage
     dxl_addparam_result = groupBulkWrite.addParam(DXL1_ID, ADDR_GOAL_POSITION, LEN_GOAL_POSITION, param_goal_position)
     if dxl_addparam_result != True:
         print("[ID:%03d] groupBulkWrite addparam failed" % DXL1_ID)
         quit()
 
-    # Add Dynamixel#2 LED value to the Bulkwrite parameter storage
+    # Add DYNAMIXEL#2 LED value to the Bulkwrite parameter storage
     dxl_addparam_result = groupBulkWrite.addParam(DXL2_ID, ADDR_LED_RED, LEN_LED_RED, [dxl_led_value[index]])
     if dxl_addparam_result != True:
         print("[ID:%03d] groupBulkWrite addparam failed" % DXL2_ID)
@@ -215,13 +214,13 @@ while 1:
         if dxl_comm_result != COMM_SUCCESS:
             print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
 
-        # Check if groupbulkread data of Dynamixel#1 is available
+        # Check if groupbulkread data of DYNAMIXEL#1 is available
         dxl_getdata_result = groupBulkRead.isAvailable(DXL1_ID, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION)
         if dxl_getdata_result != True:
             print("[ID:%03d] groupBulkRead getdata failed" % DXL1_ID)
             quit()
 
-        # Check if groupbulkread data of Dynamixel#2 is available
+        # Check if groupbulkread data of DYNAMIXEL#2 is available
         dxl_getdata_result = groupBulkRead.isAvailable(DXL2_ID, ADDR_LED_RED, LEN_LED_RED)
         if dxl_getdata_result != True:
             print("[ID:%03d] groupBulkRead getdata failed" % DXL2_ID)
@@ -247,14 +246,14 @@ while 1:
 # Clear bulkread parameter storage
 groupBulkRead.clearParam()
 
-# Disable Dynamixel#1 Torque
+# Disable DYNAMIXEL#1 Torque
 dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL1_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE)
 if dxl_comm_result != COMM_SUCCESS:
     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
 elif dxl_error != 0:
     print("%s" % packetHandler.getRxPacketError(dxl_error))
 
-# Disable Dynamixel#2 Torque
+# Disable DYNAMIXEL#2 Torque
 dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler, DXL2_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE)
 if dxl_comm_result != COMM_SUCCESS:
     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))

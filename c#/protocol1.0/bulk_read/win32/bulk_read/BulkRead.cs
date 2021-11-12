@@ -115,7 +115,7 @@ namespace bulk_read
         return;
       }
 
-      // Enable Dynamixel#1 Torque
+      // Enable DYNAMIXEL#1 Torque
       dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL1_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
       if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
       {
@@ -130,7 +130,7 @@ namespace bulk_read
         Console.WriteLine("Dynamixel{0} has been successfully connected ", DXL1_ID);
       }
 
-      // Enable Dynamixel#2 Torque
+      // Enable DYNAMIXEL#2 Torque
       dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL2_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
       if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
       {
@@ -145,7 +145,7 @@ namespace bulk_read
         Console.WriteLine("Dynamixel{0} has been successfully connected ", DXL1_ID);
       }
 
-      // Add parameter storage for Dynamixel#1 present position value
+      // Add parameter storage for DYNAMIXEL#1 present position value
       dxl_addparam_result = dynamixel.groupBulkReadAddParam(group_num, DXL1_ID, ADDR_MX_PRESENT_POSITION, LEN_MX_PRESENT_POSITION);
       if (dxl_addparam_result != true)
       {
@@ -153,7 +153,7 @@ namespace bulk_read
         return;
       }
 
-      // Add parameter storage for Dynamixel#2 present moving value
+      // Add parameter storage for DYNAMIXEL#2 present moving value
       dxl_addparam_result = dynamixel.groupBulkReadAddParam(group_num, DXL2_ID, ADDR_MX_MOVING, LEN_MX_MOVING);
       if (dxl_addparam_result != true)
       {
@@ -167,7 +167,7 @@ namespace bulk_read
         if (Console.ReadKey().KeyChar == ESC_ASCII_VALUE)
           break;
 
-        // Write Dynamixel#1 goal position
+        // Write DYNAMIXEL#1 goal position
         dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, DXL1_ID, ADDR_MX_GOAL_POSITION, dxl_goal_position[index]);
         if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
         {
@@ -178,7 +178,7 @@ namespace bulk_read
           Console.WriteLine(Marshal.PtrToStringAnsi(dynamixel.getRxPacketError(PROTOCOL_VERSION, dxl_error)));
         }
 
-        // Write Dynamixel#2 goal position
+        // Write DYNAMIXEL#2 goal position
         dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION, DXL2_ID, ADDR_MX_GOAL_POSITION, dxl_goal_position[index]);
         if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
         {
@@ -210,10 +210,10 @@ namespace bulk_read
             return;
           }
 
-          // Get Dynamixel#1 present position value
+          // Get DYNAMIXEL#1 present position value
           dxl1_present_position = (UInt16)dynamixel.groupBulkReadGetData(group_num, DXL1_ID, ADDR_MX_PRESENT_POSITION, LEN_MX_PRESENT_POSITION);
 
-          // Get Dynamixel#2 moving status value
+          // Get DYNAMIXEL#2 moving status value
           dxl2_moving = (byte)dynamixel.groupBulkReadGetData(group_num, DXL2_ID, ADDR_MX_MOVING, LEN_MX_MOVING);
 
           Console.WriteLine("[ID: {0}] Present Position : {1} [ID: {2}] Is Moving : {3}", DXL1_ID, dxl1_present_position, DXL2_ID, dxl2_moving);
@@ -231,7 +231,7 @@ namespace bulk_read
         }
       }
 
-      // Disable Dynamixel#1 Torque
+      // Disable DYNAMIXEL#1 Torque
       dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL1_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE);
       if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
       {
@@ -242,7 +242,7 @@ namespace bulk_read
         Console.WriteLine(Marshal.PtrToStringAnsi(dynamixel.getRxPacketError(PROTOCOL_VERSION, dxl_error)));
       }
 
-      // Disable Dynamixel#2 Torque
+      // Disable DYNAMIXEL#2 Torque
       dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL2_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE);
       if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
       {

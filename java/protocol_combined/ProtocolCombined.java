@@ -120,7 +120,7 @@ public class ProtocolCombined
       return;
     }
 
-    // Enable Dynamixel#1 Torque
+    // Enable DYNAMIXEL#1 Torque
     dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION1, DXL1_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION1)) != COMM_SUCCESS)
     {
@@ -132,10 +132,10 @@ public class ProtocolCombined
     }
     else
     {
-      System.out.printf("Dynamixel#%d has been successfully connected\n", DXL1_ID);
+      System.out.printf("DYNAMIXEL#%d has been successfully connected\n", DXL1_ID);
     }
 
-    // Enable Dynamixel#2 Torque
+    // Enable DYNAMIXEL#2 Torque
     dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION2, DXL2_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_ENABLE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION2)) != COMM_SUCCESS)
     {
@@ -147,7 +147,7 @@ public class ProtocolCombined
     }
     else
     {
-      System.out.printf("Dynamixel#%d has been successfully connected\n", DXL2_ID);
+      System.out.printf("DYNAMIXEL#%d has been successfully connected\n", DXL2_ID);
     }
 
     while (true)
@@ -156,7 +156,7 @@ public class ProtocolCombined
       if(scanner.nextLine().equals(KEY_FOR_ESCAPE))
         break;
 
-      // Write Dynamixel#1 goal position
+      // Write DYNAMIXEL#1 goal position
       dynamixel.write2ByteTxRx(port_num, PROTOCOL_VERSION1, DXL1_ID, ADDR_MX_GOAL_POSITION, dxl1_goal_position[index]);
       if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION1)) != COMM_SUCCESS)
       {
@@ -167,7 +167,7 @@ public class ProtocolCombined
         System.out.println(dynamixel.getRxPacketError(PROTOCOL_VERSION1, dxl_error));
       }
 
-      // Write Dynamixel#2 goal position
+      // Write DYNAMIXEL#2 goal position
       dynamixel.write4ByteTxRx(port_num, PROTOCOL_VERSION2, DXL2_ID, ADDR_PRO_GOAL_POSITION, dxl2_goal_position[index]);
       if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION2)) != COMM_SUCCESS)
       {
@@ -180,7 +180,7 @@ public class ProtocolCombined
 
       do
       {
-        // Read Dynamixel#1 present position
+        // Read DYNAMIXEL#1 present position
         dxl1_present_position = dynamixel.read2ByteTxRx(port_num, PROTOCOL_VERSION1, DXL1_ID, ADDR_MX_PRESENT_POSITION);
         if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION1)) != COMM_SUCCESS)
         {
@@ -191,7 +191,7 @@ public class ProtocolCombined
           System.out.println(dynamixel.getRxPacketError(PROTOCOL_VERSION1, dxl_error));
         }
 
-        // Read Dynamixel#2 present position
+        // Read DYNAMIXEL#2 present position
         dxl2_present_position = dynamixel.read4ByteTxRx(port_num, PROTOCOL_VERSION2, DXL2_ID, ADDR_PRO_PRESENT_POSITION);
         if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION2)) != COMM_SUCCESS)
         {
@@ -217,7 +217,7 @@ public class ProtocolCombined
       }
     }
 
-    // Disable Dynamixel#1 Torque
+    // Disable DYNAMIXEL#1 Torque
     dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION1, DXL1_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION1)) != COMM_SUCCESS)
     {
@@ -228,7 +228,7 @@ public class ProtocolCombined
       System.out.println(dynamixel.getRxPacketError(PROTOCOL_VERSION1, dxl_error));
     }
 
-    // Disable Dynamixel#2 Torque
+    // Disable DYNAMIXEL#2 Torque
     dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION2, DXL2_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_DISABLE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION2)) != COMM_SUCCESS)
     {

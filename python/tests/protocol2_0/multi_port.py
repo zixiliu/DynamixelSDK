@@ -26,8 +26,7 @@
 #    - DYNAMIXEL Starter Set (U2D2, U2D2 PHB, 12V SMPS)
 #  How to use the example :
 #    - Select the DYNAMIXEL in use at the MY_DXL in the example code.
-#    - Build and Run from proper architecture subdirectory.
-#    - For ARM based SBCs such as Raspberry Pi, use linux_sbc subdirectory to build and run.
+#    - Run from a proper Protocol version subdirectory.
 #    - https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_sdk/overview/
 #  Author: Ryu Woon Jung (Leon)
 #  Maintainer : Zerom, Will Son
@@ -55,7 +54,7 @@ from dynamixel_sdk import *                    # Uses Dynamixel SDK library
 
 #********* DYNAMIXEL Model definition *********
 #***** (Use only one definition at a time) *****
-MY_DXL = 'X_SERIES'       # X330 (5.0 V recommended), X430, X540, 2X430
+MY_DXL = 'X_SERIES'       # X330, X430, X540, 2X430
 # MY_DXL = 'MX_SERIES'    # MX series with 2.0 firmware update.
 # MY_DXL = 'PRO_SERIES'   # H54, H42, M54, M42, L54, L42
 # MY_DXL = 'PRO_A_SERIES' # PRO series with (A) firmware update.
@@ -96,8 +95,8 @@ elif MY_DXL == 'XL320':
 PROTOCOL_VERSION            = 2.0               #  See which protocol version is used in the Dynamixel
 
 # Default setting
-DXL1_ID                     = 1                 # Dynamixel#1 ID : 1
-DXL2_ID                     = 2                 # Dynamixel#2 ID : 2
+DXL1_ID                     = 1                 # DYNAMIXEL#1 ID : 1
+DXL2_ID                     = 2                 # DYNAMIXEL#2 ID : 2
 DEVICENAME1                 = '/dev/ttyUSB0'    # Check which port is being used on your controller
 DEVICENAME2                 = '/dev/ttyUSB1'    # ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
 
@@ -139,46 +138,46 @@ else:
 
 # Set port1 baudrate
 if portHandler1.setBaudRate(BAUDRATE):
-    print("Succeeded to change the baudrate")
+    print("Succeeded to set the baudrate")
 else:
-    print("Failed to change the baudrate")
+    print("Failed to set the baudrate")
     print("Press any key to terminate...")
     getch()
     quit()
 
 # Set port2 baudrate
 if portHandler2.setBaudRate(BAUDRATE):
-    print("Succeeded to change the baudrate")
+    print("Succeeded to set the baudrate")
 else:
-    print("Failed to change the baudrate")
+    print("Failed to set the baudrate")
     print("Press any key to terminate...")
     getch()
     quit()
 
-# Enable Dynamixel#1 Torque
+# Enable DYNAMIXEL#1 Torque
 dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler1, DXL1_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
 if dxl_comm_result != COMM_SUCCESS:
     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
 elif dxl_error != 0:
     print("%s" % packetHandler.getRxPacketError(dxl_error))
 else:
-    print("Dynamixel#%d has been successfully connected" % DXL1_ID)
+    print("DYNAMIXEL#%d has been successfully connected" % DXL1_ID)
 
-# Enable Dynamixel#2 Torque
+# Enable DYNAMIXEL#2 Torque
 dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler2, DXL2_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE)
 if dxl_comm_result != COMM_SUCCESS:
     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
 elif dxl_error != 0:
     print("%s" % packetHandler.getRxPacketError(dxl_error))
 else:
-    print("Dynamixel#%d has been successfully connected" % DXL2_ID)
+    print("DYNAMIXEL#%d has been successfully connected" % DXL2_ID)
 
 while 1:
     print("Press any key to continue! (or press ESC to quit!)")
     if getch() == chr(0x1b):
         break
 
-    # Write Dynamixel#1 goal position
+    # Write DYNAMIXEL#1 goal position
     if (MY_DXL == 'XL320'): # XL320 uses 2 byte Position Data, Check the size of data in your DYNAMIXEL's control table
         dxl_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler1, DXL1_ID, ADDR_GOAL_POSITION, dxl_goal_position[index])
     else:
@@ -188,7 +187,7 @@ while 1:
     elif dxl_error != 0:
         print("%s" % packetHandler.getRxPacketError(dxl_error))
 
-    # Write Dynamixel#2 goal position
+    # Write DYNAMIXEL#2 goal position
     if (MY_DXL == 'XL320'): # XL320 uses 2 byte Position Data, Check the size of data in your DYNAMIXEL's control table
         dxl2_comm_result, dxl_error = packetHandler.write2ByteTxRx(portHandler2, DXL2_ID, ADDR_GOAL_POSITION, dxl_goal_position[index])
     else:
@@ -200,7 +199,7 @@ while 1:
 
 
     while 1:
-        # Read Dynamixel#1 present position
+        # Read DYNAMIXEL#1 present position
         if (MY_DXL == 'XL320'): # XL320 uses 2 byte Position Data, Check the size of data in your DYNAMIXEL's control table
             dxl1_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler1, DXL1_ID, ADDR_PRESENT_POSITION)
         else:
@@ -210,7 +209,7 @@ while 1:
         elif dxl_error != 0:
             print("%s" % packetHandler.getRxPacketError(dxl_error))
 
-        # Read Dynamixel#2 present position
+        # Read DYNAMIXEL#2 present position
         if (MY_DXL == 'XL320'): # XL320 uses 2 byte Position Data, Check the size of data in your DYNAMIXEL's control table
             dxl2_present_position, dxl_comm_result, dxl_error = packetHandler.read2ByteTxRx(portHandler2, DXL2_ID, ADDR_PRESENT_POSITION)
         else:
@@ -232,14 +231,14 @@ while 1:
         index = 0
 
 
-# Disable Dynamixel#1 Torque
+# Disable DYNAMIXEL#1 Torque
 dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler1, DXL1_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE)
 if dxl_comm_result != COMM_SUCCESS:
     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))
 elif dxl_error != 0:
     print("%s" % packetHandler.getRxPacketError(dxl_error))
 
-# Disable Dynamixel#2 Torque
+# Disable DYNAMIXEL#2 Torque
 dxl_comm_result, dxl_error = packetHandler.write1ByteTxRx(portHandler2, DXL2_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE)
 if dxl_comm_result != COMM_SUCCESS:
     print("%s" % packetHandler.getTxRxResult(dxl_comm_result))

@@ -63,8 +63,8 @@ LEN_MX_MOVING                   = 1;
 PROTOCOL_VERSION                = 1.0;          % See which protocol version is used in the Dynamixel
 
 % Default setting
-DXL1_ID                         = 1;            % Dynamixel#1 ID: 1
-DXL2_ID                         = 2;            % Dynamixel#2 ID: 2
+DXL1_ID                         = 1;            % DYNAMIXEL#1 ID: 1
+DXL2_ID                         = 2;            % DYNAMIXEL#2 ID: 2
 BAUDRATE                        = 57600;
 DEVICENAME                      = 'COM1';       % Check which port is being used on your controller
                                                 % ex) Windows: 'COM1'   Linux: '/dev/ttyUSB0' Mac: '/dev/tty.usbserial-*'
@@ -123,7 +123,7 @@ else
 end
 
 
-% Enable Dynamixel#1 Torque
+% Enable DYNAMIXEL#1 Torque
 write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL1_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
 dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
 dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
@@ -135,7 +135,7 @@ else
     fprintf('Dynamixel has been successfully connected \n');
 end
 
-% Enable Dynamixel#2 Torque
+% Enable DYNAMIXEL#2 Torque
 write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL2_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
 dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
 dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
@@ -147,14 +147,14 @@ else
     fprintf('Dynamixel has been successfully connected \n');
 end
 
-% Add parameter storage for Dynamixel#1 present position value
+% Add parameter storage for DYNAMIXEL#1 present position value
 dxl_addparam_result = groupBulkReadAddParam(group_num, DXL1_ID, ADDR_MX_PRESENT_POSITION, LEN_MX_PRESENT_POSITION);
 if dxl_addparam_result ~= true
     fprintf('[ID:%03d] groupBulkRead addparam failed', DXL1_ID);
     return;
 end
 
-% Add parameter storage for Dynamixel#2 present moving value
+% Add parameter storage for DYNAMIXEL#2 present moving value
 dxl_addparam_result = groupBulkReadAddParam(group_num, DXL2_ID, ADDR_MX_MOVING, LEN_MX_MOVING);
 if dxl_addparam_result ~= true
     fprintf('[ID:%03d] groupBulkRead addparam failed', DXL2_ID);
@@ -167,7 +167,7 @@ while 1
         break;
     end
 
-    % Write Dynamixel#1 goal position
+    % Write DYNAMIXEL#1 goal position
     write2ByteTxRx(port_num, PROTOCOL_VERSION, DXL1_ID, ADDR_MX_GOAL_POSITION, dxl_goal_position(index));
     dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
     dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
@@ -177,7 +177,7 @@ while 1
         fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
     end
 
-    % Write Dynamixel#2 goal position
+    % Write DYNAMIXEL#2 goal position
     write2ByteTxRx(port_num, PROTOCOL_VERSION, DXL2_ID, ADDR_MX_GOAL_POSITION, dxl_goal_position(index));
     dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
     dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
@@ -195,24 +195,24 @@ while 1
             fprintf('%s\n', getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
         end
 
-        % Check if groupbulkread data of Dynamixel#1 is available
+        % Check if groupbulkread data of DYNAMIXEL#1 is available
         dxl_getdata_result = groupBulkReadIsAvailable(group_num, DXL1_ID, ADDR_MX_PRESENT_POSITION, LEN_MX_PRESENT_POSITION);
         if dxl_getdata_result ~= true
             fprintf('[ID:%03d] groupBulkRead getdata failed', DXL1_ID);
             return;
         end
 
-        % Check if groupbulkread data of Dynamixel#2 is available
+        % Check if groupbulkread data of DYNAMIXEL#2 is available
         dxl_getdata_result = groupBulkReadIsAvailable(group_num, DXL2_ID, ADDR_MX_MOVING, LEN_MX_MOVING);
         if dxl_getdata_result ~= true
             fprintf('[ID:%03d] groupBulkRead getdata failed', DXL2_ID);
             return;
         end
 
-        % Get Dynamixel#1 present position value
+        % Get DYNAMIXEL#1 present position value
         dxl1_present_position = groupBulkReadGetData(group_num, DXL1_ID, ADDR_MX_PRESENT_POSITION, LEN_MX_PRESENT_POSITION);
 
-        % Get Dynamixel#2 moving status value
+        % Get DYNAMIXEL#2 moving status value
         dxl2_moving = groupBulkReadGetData(group_num, DXL2_ID, ADDR_MX_MOVING, LEN_MX_MOVING);
 
         fprintf('[ID:%03d] Present Position : %d \t [ID:%03d] Is Moving : %d\n', DXL1_ID, dxl1_present_position, DXL2_ID, dxl2_moving);
@@ -231,7 +231,7 @@ while 1
 end
 
 
-% Disable Dynamixel#1 Torque
+% Disable DYNAMIXEL#1 Torque
 write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL1_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE);
 dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
 dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
@@ -241,7 +241,7 @@ elseif dxl_error ~= 0
     fprintf('%s\n', getRxPacketError(PROTOCOL_VERSION, dxl_error));
 end
 
-% Disable Dynamixel#2 Torque
+% Disable DYNAMIXEL#2 Torque
 write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL2_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE);
 dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION);
 dxl_error = getLastRxPacketError(port_num, PROTOCOL_VERSION);
