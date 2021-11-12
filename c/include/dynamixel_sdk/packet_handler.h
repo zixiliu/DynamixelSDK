@@ -97,9 +97,8 @@ WINDECLSPEC void        setDataWrite        (int port_num, int protocol_version,
 WINDECLSPEC uint32_t    getDataRead         (int port_num, int protocol_version, uint16_t data_length, uint16_t data_pos);
 
 WINDECLSPEC void        txPacket            (int port_num, int protocol_version);
-
-WINDECLSPEC void        rxPacket            (int port_num, int protocol_version, uint8_t fast_option);
-
+WINDECLSPEC void        rxPacket            (int port_num, int protocol_version);
+WINDECLSPEC void        fastReadRxPacket    (int port_num, int protocol_version, uint8_t fast_option);
 WINDECLSPEC void        txRxPacket          (int port_num, int protocol_version);
 
 WINDECLSPEC void        ping                (int port_num, int protocol_version, uint8_t id);
@@ -152,7 +151,8 @@ WINDECLSPEC void    write4ByteTxRx          (int port_num, int protocol_version,
 WINDECLSPEC void    regWriteTxOnly          (int port_num, int protocol_version, uint8_t id, uint16_t address, uint16_t length);
 WINDECLSPEC void    regWriteTxRx            (int port_num, int protocol_version, uint8_t id, uint16_t address, uint16_t length);
 
-WINDECLSPEC void    syncReadTx              (int port_num, int protocol_version, uint16_t start_address, uint16_t data_length, uint16_t param_length, uint8_t fast_option);
+WINDECLSPEC void    syncReadTx              (int port_num, int protocol_version, uint16_t start_address, uint16_t data_length, uint16_t param_length);
+WINDECLSPEC void    fastSyncReadTx          (int port_num, int protocol_version, uint16_t start_address, uint16_t data_length, uint16_t param_length, uint8_t fast_option);
 // syncReadRx   -> GroupSyncRead
 // syncReadTxRx -> GroupSyncRead
 
