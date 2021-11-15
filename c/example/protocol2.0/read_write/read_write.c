@@ -1,30 +1,25 @@
-/*******************************************************************************
-* Copyright 2017 ROBOTIS CO., LTD.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*******************************************************************************/
+// Copyright 2021 ROBOTIS CO., LTD.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-/* Author: Ryu Woon Jung (Leon) */
-
+// Read Write Example Environment
 //
-// *********     Read and Write Example      *********
+// - DYNAMIXEL: X series (except XL-320), MX(2.0) series, P series
+//              ID = 1, Baudrate = 57600bps, Protocol 2.0
+// - USB-Serial Interface : U2D2 (DYNAMIXEL Starter Set)
+// - Library: DYNAMIXEL SDK v3.8.1 or later
 //
-//
-// Available Dynamixel model on this example : All models using Protocol 2.0
-// This example is designed for using a Dynamixel PRO 54-200, and an USB2DYNAMIXEL.
-// To use another Dynamixel model, such as X series, see their details in E-Manual(emanual.robotis.com) and edit below "#define"d variables yourself.
-// Be sure that Dynamixel PRO properties are already set as %% ID : 1 / Baudnum : 1 (Baudrate : 57600)
-//
+// Author: Will Son
 
 #if defined(__linux__) || defined(__APPLE__)
 #include <fcntl.h>
@@ -38,27 +33,47 @@
 #include <stdio.h>
 #include "dynamixel_sdk.h"                                  // Uses Dynamixel SDK library
 
-// Control table address
-#define ADDR_PRO_TORQUE_ENABLE          562                 // Control table address is different in Dynamixel model
-#define ADDR_PRO_GOAL_POSITION          596
-#define ADDR_PRO_PRESENT_POSITION       611
+// Uncomment the definition below when running this example with P series
+// #define USE_DYNAMIXEL_P_SERIES
 
-// Protocol version
-#define PROTOCOL_VERSION                2.0                 // See which protocol version is used in the Dynamixel
+// Control table address differs by DYNAMIXEL model
+#ifdef USE_DYNAMIXEL_P_SERIES
+  #define ADDR_TORQUE_ENABLE  512
+  #define ADDR_GOAL_POSITION  564
+  #define ADDR_PRESENT_POSITION  580
+#else
+  #define ADDR_TORQUE_ENABLE  64
+  #define ADDR_GOAL_POSITION  116
+  #define ADDR_PRESENT_POSITION  132
+#endif
 
-// Default setting
-#define DXL_ID                          1                   // Dynamixel ID: 1
-#define BAUDRATE                        57600
-#define DEVICENAME                      "/dev/ttyUSB0"      // Check which port is being used on your controller
-                                                            // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
+// Protocol version of DYNAMIXEL
+#define PROTOCOL_VERSION  2.0
 
-#define TORQUE_ENABLE                   1                   // Value for enabling the torque
-#define TORQUE_DISABLE                  0                   // Value for disabling the torque
-#define DXL_MINIMUM_POSITION_VALUE      -150000             // Dynamixel will rotate between this value
-#define DXL_MAXIMUM_POSITION_VALUE      150000              // and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
-#define DXL_MOVING_STATUS_THRESHOLD     20                  // Dynamixel moving status threshold
+// These configuration must match to the actual DYNAMIXEL configuration.
+// DYNAMIXEL ID: 1
+#define DXL_ID  1
+#define BAUDRATE  57600
+// Check which serial port is assigned to the U2D2
+// ex) Windows: "COM*"   Linux: "/dev/ttyUSB*" Mac: "/dev/tty.usbserial-*"
+#define SERIAL_PORT  "/dev/ttyUSB0"
+// Value for enabling the torque
+#define TORQUE_ENABLE  1
+// Value for disabling the torque
+#define TORQUE_DISABLE  0
+// Minimum & Maximum range of Goal Position.
+// Invalid value range will be ignored. Refer to the product eManual.
+#ifdef USE_DYNAMIXEL_P_SERIES
+  #define DXL_MINIMUM_POSITION_VALUE  0
+  #define DXL_MAXIMUM_POSITION_VALUE  100000
+#else
+  #define DXL_MINIMUM_POSITION_VALUE  0
+  #define DXL_MAXIMUM_POSITION_VALUE  1023
+#endif
+// Moving status flag threshold
+#define DXL_MOVING_STATUS_THRESHOLD  20
 
-#define ESC_ASCII_VALUE                 0x1b
+#define ESC_ASCII_VALUE  0x1b
 
 int getch()
 {
@@ -113,7 +128,7 @@ int main()
   // Initialize PortHandler Structs
   // Set the port path
   // Get methods and members of PortHandlerLinux or PortHandlerWindows
-  int port_num = portHandler(DEVICENAME);
+  int port_num = portHandler(SERIAL_PORT);
 
   // Initialize PacketHandler Structs
   packetHandler();
@@ -152,7 +167,7 @@ int main()
   }
 
   // Enable Dynamixel Torque
-  write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_ENABLE);
+  write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE);
   if ((dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
   {
     printf("%s\n", getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
@@ -173,7 +188,7 @@ int main()
       break;
 
     // Write goal position
-    write4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_GOAL_POSITION, dxl_goal_position[index]);
+    write4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_GOAL_POSITION, dxl_goal_position[index]);
     if ((dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
     {
       printf("%s\n", getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
@@ -186,7 +201,7 @@ int main()
     do
     {
       // Read present position
-      dxl_present_position = read4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_PRESENT_POSITION);
+      dxl_present_position = read4ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRESENT_POSITION);
       if ((dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
       {
         printf("%s\n", getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
@@ -212,7 +227,7 @@ int main()
   }
 
   // Disable Dynamixel Torque
-  write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_PRO_TORQUE_ENABLE, TORQUE_DISABLE);
+  write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE);
   if ((dxl_comm_result = getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
   {
     printf("%s\n", getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));

@@ -58,9 +58,6 @@
 #define INST_FAST_SYNC_READ 138     // 0x8A
 #define INST_BULK_WRITE     147     // 0x93
 
-#define ENABLE_FAST_OPTION  1
-#define DISABLE_FAST_OPTION 0
-
 // Communication Result
 #define COMM_SUCCESS        0       // tx or rx packet communication success
 #define COMM_PORT_BUSY      -1000   // Port is busy (in use)
@@ -98,7 +95,7 @@ WINDECLSPEC uint32_t    getDataRead         (int port_num, int protocol_version,
 
 WINDECLSPEC void        txPacket            (int port_num, int protocol_version);
 WINDECLSPEC void        rxPacket            (int port_num, int protocol_version);
-WINDECLSPEC void        fastReadRxPacket    (int port_num, int protocol_version, uint8_t fast_option);
+WINDECLSPEC void        fastReadRxPacket    (int port_num, int protocol_version);
 WINDECLSPEC void        txRxPacket          (int port_num, int protocol_version);
 
 WINDECLSPEC void        ping                (int port_num, int protocol_version, uint8_t id);
@@ -121,7 +118,7 @@ WINDECLSPEC void        factoryReset        (int port_num, int protocol_version,
 
 WINDECLSPEC void        readTx              (int port_num, int protocol_version, uint8_t id, uint16_t address, uint16_t length);
 WINDECLSPEC void        readRx              (int port_num, int protocol_version, uint16_t length);
-WINDECLSPEC void        readFastSyncRx      (int port_num, int protocol_version, uint16_t length);
+WINDECLSPEC void        fastSyncReadRx      (int port_num, int protocol_version, uint16_t length);
 WINDECLSPEC void        readTxRx            (int port_num, int protocol_version, uint8_t id, uint16_t address, uint16_t length);
 
 WINDECLSPEC void        read1ByteTx         (int port_num, int protocol_version, uint8_t id, uint16_t address);
@@ -152,7 +149,7 @@ WINDECLSPEC void    regWriteTxOnly          (int port_num, int protocol_version,
 WINDECLSPEC void    regWriteTxRx            (int port_num, int protocol_version, uint8_t id, uint16_t address, uint16_t length);
 
 WINDECLSPEC void    syncReadTx              (int port_num, int protocol_version, uint16_t start_address, uint16_t data_length, uint16_t param_length);
-WINDECLSPEC void    fastSyncReadTx          (int port_num, int protocol_version, uint16_t start_address, uint16_t data_length, uint16_t param_length, uint8_t fast_option);
+WINDECLSPEC void    fastSyncReadTx          (int port_num, int protocol_version, uint16_t start_address, uint16_t data_length, uint16_t param_length);
 // syncReadRx   -> GroupSyncRead
 // syncReadTxRx -> GroupSyncRead
 

@@ -490,7 +490,7 @@ void rxPacket2(int port_num)
     removeStuffing(packetData[port_num].rx_packet);
 }
 
-void fastRxPacket2(int port_num, uint8_t fast_option)
+void fastRxPacket2(int port_num)
 {
   uint16_t s;
   uint16_t idx;
@@ -527,7 +527,7 @@ void fastRxPacket2(int port_num, uint8_t fast_option)
       if (idx == 0)
       {
         if (packetData[port_num].rx_packet[PKT_RESERVED] != 0x00 ||
-          // packetData[port_num].rx_packet[PKT_ID] > 0xFC ||
+          packetData[port_num].rx_packet[PKT_ID] > BROADCAST_ID ||
           DXL_MAKEWORD(packetData[port_num].rx_packet[PKT_LENGTH_L], packetData[port_num].rx_packet[PKT_LENGTH_H]) > RXPACKET_MAX_LEN ||
           packetData[port_num].rx_packet[PKT_INSTRUCTION] != 0x55)
         {
@@ -618,11 +618,6 @@ void fastRxPacket2(int port_num, uint8_t fast_option)
   g_is_using[port_num] = False;
 
   // Fast Sync Read and Fast Bulk Read do not use Byte Stuffing
-  if (packetData[port_num].communication_result == COMM_SUCCESS &&
-    fast_option == DISABLE_FAST_OPTION)
-    {
-      removeStuffing(packetData[port_num].rx_packet);
-    }
 }
 
 // NOT for BulkRead / SyncRead instruction
@@ -656,10 +651,10 @@ void txRxPacket2(int port_num)
   }
 
   // rx packet
-  fastRxPacket2(port_num, DISABLE_FAST_OPTION);
+  rxPacket2(port_num);
   // check txpacket ID == rxpacket ID
   if (packetData[port_num].tx_packet[PKT_ID] != packetData[port_num].rx_packet[PKT_ID])
-    fastRxPacket2(port_num, DISABLE_FAST_OPTION);
+    rxPacket2(port_num);
 
   if (packetData[port_num].communication_result == COMM_SUCCESS && packetData[port_num].tx_packet[PKT_ID] != BROADCAST_ID)
   {
@@ -976,7 +971,7 @@ void readRx2(int port_num, uint16_t length)
   }
 }
 
-void fastReadRx2(int port_num, uint16_t length, uint8_t fast_option)
+void fastReadRx2(int port_num, uint16_t length)
 {
   uint16_t s;
 
@@ -990,7 +985,7 @@ void fastReadRx2(int port_num, uint16_t length, uint8_t fast_option)
     return;
   }
   
-  fastRxPacket2(port_num, fast_option);
+  fastRxPacket2(port_num);
 
   if (packetData[port_num].communication_result == COMM_SUCCESS)
   {
@@ -1060,7 +1055,7 @@ uint8_t read1ByteRx2(int port_num)
     return 0;
   }
   packetData[port_num].data_read[0] = 0;
-  fastReadRx2(port_num, 1, DISABLE_FAST_OPTION);
+  fastReadRx2(port_num, 1);
   if (packetData[port_num].communication_result == COMM_SUCCESS)
     return packetData[port_num].data_read[0];
   return 0;
@@ -1094,7 +1089,7 @@ uint16_t read2ByteRx2(int port_num)
   }
   packetData[port_num].data_read[0] = 0;
   packetData[port_num].data_read[1] = 0;
-  fastReadRx2(port_num, 2, DISABLE_FAST_OPTION);
+  fastReadRx2(port_num, 2);
   if (packetData[port_num].communication_result == COMM_SUCCESS)
     return DXL_MAKEWORD(packetData[port_num].data_read[0], packetData[port_num].data_read[1]);
   return 0;
@@ -1131,7 +1126,7 @@ uint32_t read4ByteRx2(int port_num)
   packetData[port_num].data_read[1] = 0;
   packetData[port_num].data_read[2] = 0;
   packetData[port_num].data_read[3] = 0;
-  fastReadRx2(port_num, 4, DISABLE_FAST_OPTION);
+  fastReadRx2(port_num, 4);
   if (packetData[port_num].communication_result == COMM_SUCCESS)
     return DXL_MAKEDWORD(DXL_MAKEWORD(packetData[port_num].data_read[0], packetData[port_num].data_read[1]), DXL_MAKEWORD(packetData[port_num].data_read[2], packetData[port_num].data_read[3]));
   return 0;
@@ -1382,7 +1377,7 @@ void syncReadTx2(int port_num, uint16_t start_address, uint16_t data_length, uin
     setPacketTimeout(port_num, (uint16_t)((11 + data_length) * param_length));
 }
 
-void fastSyncReadTx2(int port_num, uint16_t start_address, uint16_t data_length, uint16_t param_length, uint8_t fast_option)
+void fastSyncReadTx2(int port_num, uint16_t start_address, uint16_t data_length, uint16_t param_length)
 {
   uint16_t s;
 
@@ -1399,11 +1394,7 @@ void fastSyncReadTx2(int port_num, uint16_t start_address, uint16_t data_length,
   packetData[port_num].tx_packet[PKT_ID] = BROADCAST_ID;
   packetData[port_num].tx_packet[PKT_LENGTH_L] = DXL_LOBYTE(param_length + 7); // 7: INST START_ADDR_L START_ADDR_H DATA_LEN_L DATA_LEN_H CRC16_L CRC16_H
   packetData[port_num].tx_packet[PKT_LENGTH_H] = DXL_HIBYTE(param_length + 7); // 7: INST START_ADDR_L START_ADDR_H DATA_LEN_L DATA_LEN_H CRC16_L CRC16_H
-  if (fast_option == ENABLE_FAST_OPTION) {
-    packetData[port_num].tx_packet[PKT_INSTRUCTION] = INST_FAST_SYNC_READ;
-  } else {
-    packetData[port_num].tx_packet[PKT_INSTRUCTION] = INST_SYNC_READ;
-  }
+  packetData[port_num].tx_packet[PKT_INSTRUCTION] = INST_FAST_SYNC_READ;
   packetData[port_num].tx_packet[PKT_PARAMETER0 + 0] = DXL_LOBYTE(start_address);
   packetData[port_num].tx_packet[PKT_PARAMETER0 + 1] = DXL_HIBYTE(start_address);
   packetData[port_num].tx_packet[PKT_PARAMETER0 + 2] = DXL_LOBYTE(data_length);

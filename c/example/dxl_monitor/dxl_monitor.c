@@ -44,7 +44,7 @@
 #define PROTOCOL_VERSION2               2.0
 
 // Default setting
-#define DEVICENAME                      "/dev/ttyUSB0"      // Check which port is being used on your controller
+#define SERIAL_PORT                      "/dev/ttyUSB0"      // Check which port is being used on your controller
                                                             // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
 
 int getch()
@@ -281,7 +281,7 @@ int main(int argc, char *argv[])
   fprintf(stderr,   "*                            DXL Monitor                              *\n");
   fprintf(stderr,   "***********************************************************************\n\n");
 
-  char *dev_name = (char*)DEVICENAME;
+  char *dev_name = (char*)SERIAL_PORT;
 
 #if defined(__linux__) || defined(__APPLE__)
   /* parameter parsing */

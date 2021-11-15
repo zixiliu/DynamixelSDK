@@ -151,7 +151,7 @@ void rxPacket(int port_num, int protocol_version)
   }
 }
 
-void fastReadRxPacket(int port_num, int protocol_version, uint8_t fast_option)
+void fastReadRxPacket(int port_num, int protocol_version)
 {
   if (protocol_version == 1)
   {
@@ -159,7 +159,7 @@ void fastReadRxPacket(int port_num, int protocol_version, uint8_t fast_option)
   }
   else
   {
-    fastRxPacket2(port_num, fast_option);
+    fastRxPacket2(port_num);
   }
 }
 
@@ -283,13 +283,13 @@ void readRx(int port_num, int protocol_version, uint16_t length)
   }
   else
   {
-    fastReadRx2(port_num, length, DISABLE_FAST_OPTION);
+    readRx2(port_num, length);
   }
 }
 
-void readFastSyncRx(int port_num, int protocol_version, uint16_t length)
+void fastSyncReadRx(int port_num, int protocol_version, uint16_t length)
 {
-  fastReadRx2(port_num, length, ENABLE_FAST_OPTION);
+  fastReadRx2(port_num, length);
 }
 
 void readTxRx(int port_num, int protocol_version, uint8_t id, uint16_t address, uint16_t length)
@@ -533,19 +533,17 @@ void syncReadTx(int port_num, int protocol_version, uint16_t start_address, uint
   }
 }
 
-void fastSyncReadTx(int port_num, int protocol_version, uint16_t start_address, uint16_t data_length, uint16_t param_length, uint8_t fast_option)
+void fastSyncReadTx(int port_num, int protocol_version, uint16_t start_address, uint16_t data_length, uint16_t param_length)
 {
   if (protocol_version == 1)
   {
-    syncReadTx1(port_num, start_address, data_length, param_length);
+    packetData[port_num].communication_result = COMM_NOT_AVAILABLE;
   }
   else
   {
-    fastSyncReadTx2(port_num, start_address, data_length, param_length, fast_option);
+    fastSyncReadTx2(port_num, start_address, data_length, param_length);
   }
 }
-// syncReadRx   -> GroupSyncRead
-// syncReadTxRx -> GroupSyncRead
 
 void syncWriteTxOnly(int port_num, int protocol_version, uint16_t start_address, uint16_t data_length, uint16_t param_length)
 {
@@ -570,8 +568,6 @@ void bulkReadTx(int port_num, int protocol_version, uint16_t param_length)
     bulkReadTx2(port_num, param_length);
   }
 }
-// bulkReadRx   -> GroupBulkRead
-// bulkReadTxRx -> GroupBulkRead
 
 void bulkWriteTxOnly(int port_num, int protocol_version, uint16_t param_length)
 {

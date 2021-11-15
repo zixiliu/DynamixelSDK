@@ -228,12 +228,11 @@ void groupSyncReadTxPacket(int group_num)
   if (groupData[group_num].is_param_changed == True)
     groupSyncReadMakeParam(group_num);
 
-  fastSyncReadTx(groupData[group_num].port_num,
+  syncReadTx(groupData[group_num].port_num,
     groupData[group_num].protocol_version,
     groupData[group_num].start_address,
     groupData[group_num].data_length,
-    (size(group_num) * 1),
-    DISABLE_FAST_OPTION);
+    (size(group_num) * 1));
 }
 
 void groupFastSyncReadTxPacket(int group_num)
@@ -259,8 +258,7 @@ void groupFastSyncReadTxPacket(int group_num)
     groupData[group_num].protocol_version,
     groupData[group_num].start_address,
     groupData[group_num].data_length,
-    (size(group_num) * 1),
-    ENABLE_FAST_OPTION);
+    (size(group_num) * 1));
 }
 
 void groupSyncReadRxPacket(int group_num)
@@ -330,7 +328,7 @@ void groupFastSyncReadRxPacket(int group_num)
   // only ONE status packet is received. Parse once and exit.
   packetData[port_num].data_read = (uint8_t *)realloc(packetData[port_num].data_read, data_size);
   // save the stripped packet to data_read buffer (ID + Param + CRC + ERR + ID + Param + CRC + ... + CRC)
-  readRx(groupData[group_num].port_num, groupData[group_num].protocol_version, data_size);
+  fastSyncReadRx(groupData[group_num].port_num, groupData[group_num].protocol_version, data_size);
   
   if (packetData[port_num].communication_result != COMM_SUCCESS)
   {

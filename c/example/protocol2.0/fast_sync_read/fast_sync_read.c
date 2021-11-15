@@ -65,7 +65,7 @@
 #define BAUDRATE  57600
 // Check which serial port is assigned to the U2D2
 // ex) Windows: "COM*"   Linux: "/dev/ttyUSB*" Mac: "/dev/tty.usbserial-*"
-#define DEVICENAME  "/dev/ttyUSB0"
+#define SERIAL_PORT  "/dev/ttyUSB0"
 // Value for enabling the torque
 #define TORQUE_ENABLE  1
 // Value for disabling the torque
@@ -137,7 +137,7 @@ int main()
   // Initialize PortHandler Structs
   // Set the port path
   // Get methods and members of PortHandlerLinux or PortHandlerWindows
-  int port_num = portHandler(DEVICENAME);
+  int port_num = portHandler(SERIAL_PORT);
 
   // Initialize PacketHandler Structs
   packetHandler();
