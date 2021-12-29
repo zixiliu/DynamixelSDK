@@ -1,32 +1,27 @@
-/*******************************************************************************
-* Copyright 2017 ROBOTIS CO., LTD.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*******************************************************************************/
+// Copyright 2021 ROBOTIS CO., LTD.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-/*******************************************************************************
-************************     Read and Write Example      ***********************
-* Required Environment to run this example :
-*   - Protocol 2.0 supported DYNAMIXEL(X, P, PRO/PRO(A), MX 2.0 series)
-*   - DYNAMIXEL Starter Set (U2D2, U2D2 PHB, 12V SMPS)
-* How to use the example :
-*   - Use proper DYNAMIXEL Model definition from line #44
-*   - Build and Run from proper architecture subdirectory.
-*   - For ARM based SBCs such as Raspberry Pi, use linux_sbc subdirectory to build and run.
-*   - https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_sdk/overview/
-* Author: Ryu Woon Jung (Leon)
-* Maintainer : Zerom, Will Son
-*******************************************************************************/
+// Required Environment to run this example :
+//   - Protocol 2.0 supported DYNAMIXEL(X, P, PRO/PRO(A), MX 2.0 series)
+//   - DYNAMIXEL Starter Set (U2D2, U2D2 PHB, 12V SMPS)
+// How to use the example :
+//   - Use proper DYNAMIXEL Model definition from line #44
+//   - Build and Run from proper architecture subdirectory.
+//   - For ARM based SBCs such as Raspberry Pi, use linux_sbc subdirectory to build and run.
+//   - https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_sdk/overview/
+// Author: Ryu Woon Jung (Leon)
+// Maintainer : Zerom, Will Son
 
 #if defined(__linux__) || defined(__APPLE__)
 #include <fcntl.h>
@@ -41,8 +36,7 @@
 
 #include "dynamixel_sdk.h"  // Uses DYNAMIXEL SDK library
 
-/********* DYNAMIXEL Model definition *********
-***** (Use only one definition at a time) *****/
+// Use only one DYNAMIXEL definition at a time
 #define X_SERIES // X330, X430, X540, 2X430
 // #define PRO_SERIES // H54, H42, M54, M42, L54, L42
 // #define PRO_A_SERIES // PRO series with (A) firmware update.

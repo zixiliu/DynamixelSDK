@@ -16,15 +16,14 @@
 
 /* Author: Ryu Woon Jung (Leon) */
 
-//
 // *********     Multi Port Example      *********
 //
-//
-// Available Dynamixel model on this example : All models using Protocol 1.0
-// This example is designed for using two Dynamixel MX-28, and two USB2DYNAMIXEL.
-// To use another Dynamixel model, such as X series, see their details in E-Manual(emanual.robotis.com) and edit below variables yourself.
-// Be sure that Dynamixel MX properties are already set as %% ID : 1 / Baudnum : 34 (Baudrate : 57600)
-//
+// This example describes how to use multiple USB-Serial interfaces by creating two port handlers.
+// This example is tested with two MX-28, and USB2DYNAMIXEL or U2D2.
+// For other DYNAMIXEL series, refer to the e-Manual(emanual.robotis.com) and modify the control table properties.
+// Be sure that the ID and baudrate of DYNAMIXEL modules are properly configured.
+// DYNAMIXEL can easily be configured with DYNAMIXEL Wizard 2.0
+// https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_wizard2/
 
 import java.util.Scanner;
 
@@ -33,7 +32,7 @@ public class MultiPort
   public static void main(String[] args)
   {
     // Control table address
-    short ADDR_MX_TORQUE_ENABLE         = 24;                  // Control table address is different in Dynamixel model
+    short ADDR_MX_TORQUE_ENABLE         = 24;                  // Control table address is different in DYNAMIXEL model
     short ADDR_MX_GOAL_POSITION         = 30;
     short ADDR_MX_PRESENT_POSITION      = 36;
 
@@ -41,17 +40,17 @@ public class MultiPort
     int PROTOCOL_VERSION                = 1;                   // See which protocol version is used in the Dynamixel
 
     // Default setting
-    byte DXL1_ID                        = 1;                   // Dynamixel ID: 1
-    byte DXL2_ID                        = 2;                   // Dynamixel ID: 2
+    byte DXL1_ID                        = 1;                   // DYNAMIXEL ID: 1
+    byte DXL2_ID                        = 2;                   // DYNAMIXEL ID: 2
     int BAUDRATE                        = 57600;
     String DEVICENAME1                   = "/dev/ttyUSB0";     // Check which port is being used on your controller
     String DEVICENAME2                   = "/dev/ttyUSB1";     // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
 
     byte TORQUE_ENABLE                  = 1;                   // Value for enabling the torque
     byte TORQUE_DISABLE                 = 0;                   // Value for disabling the torque
-    short DXL_MINIMUM_POSITION_VALUE    = 100;                 // Dynamixel will rotate between this value
-    short DXL_MAXIMUM_POSITION_VALUE    = 4000;                // and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
-    int DXL_MOVING_STATUS_THRESHOLD     = 10;                  // Dynamixel moving status threshold
+    short DXL_MINIMUM_POSITION_VALUE    = 100;                 // DYNAMIXEL will rotate between this value
+    short DXL_MAXIMUM_POSITION_VALUE    = 4000;                // and this value (note that the DYNAMIXEL would not move when the position value is out of movable range. Check e-manual about the range of the DYNAMIXEL you use.)
+    int DXL_MOVING_STATUS_THRESHOLD     = 10;                  // DYNAMIXEL moving status threshold
 
     String KEY_FOR_ESCAPE               = "e";                 // Key for escape
 
@@ -61,7 +60,7 @@ public class MultiPort
     // Instead of getch
     Scanner scanner = new Scanner(System.in);
 
-    // Initialize Dynamixel class for java
+    // Initialize DYNAMIXEL class for java
     Dynamixel dynamixel = new Dynamixel();
 
     // Initialize PortHandler Structs
@@ -77,7 +76,7 @@ public class MultiPort
     int dxl_comm_result = COMM_TX_FAIL;                         // Communication result
     short[] dxl_goal_position = new short[]{DXL_MINIMUM_POSITION_VALUE, DXL_MAXIMUM_POSITION_VALUE};         // Goal position
 
-    byte dxl_error = 0;                                         // Dynamixel error
+    byte dxl_error = 0;                                         // DYNAMIXEL error
     short dxl1_present_position = 0, dxl2_present_position = 0; // Present position
 
     // Open port1
