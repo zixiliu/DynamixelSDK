@@ -194,7 +194,9 @@ public class BulkRead
       do
       {
         // Bulkread present position and moving status
-        dynamixel.groupBulkReadTxRxPacket(group_num);
+        // specifically note that this command does not work on the AX series; only on MX series. 
+        // all other commands in this example will work on the AX series.
+        dynamixel.groupBulkReadTxRxPacket(group_num); 
         if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
           System.out.println(dynamixel.getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
 
