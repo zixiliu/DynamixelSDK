@@ -180,7 +180,7 @@ while 1
     % Add parameter storage for DYNAMIXEL#2 LED value
     dxl_addparam_result = groupBulkWriteAddParam(groupwrite_num, DXL2_ID, ADDR_PRO_LED_RED, LEN_PRO_LED_RED, dxl_led_value(index), LEN_PRO_LED_RED);
     if dxl_addparam_result ~= true
-      fprintf(stderr, '[ID:%03d] groupBulkWrite addparam failed', DXL1_ID);
+      fprintf(stderr, '[ID:%03d] groupBulkWrite addparam failed', DXL2_ID);
       return;
     end
 
