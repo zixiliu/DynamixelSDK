@@ -16,15 +16,13 @@
 
 /* Author: Ryu Woon Jung (Leon) */
 
-//
 // *********     Ping Example      *********
 //
-//
-// Available Dynamixel model on this example : All models using Protocol 1.0
-// This example is designed for using a Dynamixel MX-28, and an USB2DYNAMIXEL.
-// To use another Dynamixel model, such as X series, see their details in E-Manual(emanual.robotis.com) and edit below variables yourself.
-// Be sure that Dynamixel MX properties are already set as %% ID : 1 / Baudnum : 34 (Baudrate : 57600)
-//
+// This example is tested with MX series, AX series and USB2DYNAMIXEL or U2D2.
+// For other DYNAMIXEL series, refer to the e-Manual(emanual.robotis.com) and modify the control table properties.
+// Be sure that the ID and baudrate of DYNAMIXEL modules are properly configured.
+// DYNAMIXEL can easily be configured with DYNAMIXEL Wizard 2.0
+// https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_wizard2/
 
 import java.util.Scanner;
 
@@ -36,7 +34,7 @@ public class Ping
     int PROTOCOL_VERSION                = 1;                   // See which protocol version is used in the Dynamixel
 
     // Default setting
-    byte DXL_ID                         = 1;                   // Dynamixel ID: 1
+    byte DXL_ID                         = 1;                   // DYNAMIXEL ID: 1
     int BAUDRATE                        = 57600;
     String DEVICENAME                   = "/dev/ttyUSB0";      // Check which port is being used on your controller
                                                                // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
@@ -47,7 +45,7 @@ public class Ping
     // Instead of getch
     Scanner scanner = new Scanner(System.in);
 
-    // Initialize Dynamixel class for java
+    // Initialize DYNAMIXEL class for java
     Dynamixel dynamixel = new Dynamixel();
 
     // Initialize PortHandler Structs
@@ -60,8 +58,8 @@ public class Ping
 
     int dxl_comm_result = COMM_TX_FAIL;                       // Communication result
 
-    byte dxl_error = 0;                                       // Dynamixel error
-    int dxl_model_number;                                     // Dynamixel model number
+    byte dxl_error = 0;                                       // DYNAMIXEL error
+    int dxl_model_number;                                     // DYNAMIXEL model number
 
     // Open port
     if (dynamixel.openPort(port_num))
@@ -90,7 +88,7 @@ public class Ping
     }
 
     // Try to ping the Dynamixel
-    // Get Dynamixel model number
+    // Get DYNAMIXEL model number
     dxl_model_number = dynamixel.pingGetModelNum(port_num, PROTOCOL_VERSION, DXL_ID);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
     {
@@ -102,7 +100,7 @@ public class Ping
     }
     else
     {
-      System.out.printf("[ID: %d] ping Succeeded. Dynamixel model number : %d\n", DXL_ID, dxl_model_number);
+      System.out.printf("[ID: %d] ping Succeeded. DYNAMIXEL model number : %d\n", DXL_ID, dxl_model_number);
     }
 
     // Close port

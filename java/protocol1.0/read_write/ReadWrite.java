@@ -19,11 +19,11 @@
 //
 // *********     Read and Write Example      *********
 //
-//
-// Available DXL model on this example : All models using Protocol 1.0
-// This example is tested with a DXL MX-28, and an USB2DYNAMIXEL
-// Be sure that DXL MX properties are already set as %% ID : 1 / Baudnum : 34 (Baudrate : 57600)
-//
+// This example is tested with MX series, AX series and USB2DYNAMIXEL or U2D2.
+// For other DYNAMIXEL series, refer to the e-Manual(emanual.robotis.com) and modify the control table properties.
+// Be sure that the ID and baudrate of DYNAMIXEL modules are properly configured.
+// DYNAMIXEL can easily be configured with DYNAMIXEL Wizard 2.0
+// https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_wizard2/
 
 import java.util.Scanner;
 
@@ -32,7 +32,7 @@ public class ReadWrite
   public static void main(String[] args)
   {
     // Control table address
-    short ADDR_MX_TORQUE_ENABLE         = 24;                  // Control table address is different in Dynamixel model
+    short ADDR_MX_TORQUE_ENABLE         = 24;                  // Control table address is different in DYNAMIXEL model
     short ADDR_MX_GOAL_POSITION         = 30;
     short ADDR_MX_PRESENT_POSITION      = 36;
 
@@ -40,16 +40,16 @@ public class ReadWrite
     int PROTOCOL_VERSION                = 1;                   // See which protocol version is used in the Dynamixel
 
     // Default setting
-    byte DXL_ID                         = 1;                   // Dynamixel ID: 1
+    byte DXL_ID                         = 1;                   // DYNAMIXEL ID: 1
     int BAUDRATE                        = 57600;
     String DEVICENAME                   = "/dev/ttyUSB0";      // Check which port is being used on your controller
                                                                // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
 
     byte TORQUE_ENABLE                  = 1;                   // Value for enabling the torque
     byte TORQUE_DISABLE                 = 0;                   // Value for disabling the torque
-    short DXL_MINIMUM_POSITION_VALUE    = 100;                 // Dynamixel will rotate between this value
-    short DXL_MAXIMUM_POSITION_VALUE    = 4000;                // and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
-    int DXL_MOVING_STATUS_THRESHOLD     = 10;                  // Dynamixel moving status threshold
+    short DXL_MINIMUM_POSITION_VALUE    = 100;                 // DYNAMIXEL will rotate between this value
+    short DXL_MAXIMUM_POSITION_VALUE    = 4000;                // and this value (note that the DYNAMIXEL would not move when the position value is out of movable range. Check e-manual about the range of the DYNAMIXEL you use.)
+    int DXL_MOVING_STATUS_THRESHOLD     = 10;                  // DYNAMIXEL moving status threshold
 
     String KEY_FOR_ESCAPE               = "e";                 // Key for escape
 
@@ -59,7 +59,7 @@ public class ReadWrite
     // Instead of getch
     Scanner scanner = new Scanner(System.in);
 
-    // Initialize Dynamixel class for java
+    // Initialize DYNAMIXEL class for java
     Dynamixel dynamixel = new Dynamixel();
 
     // Initialize PortHandler Structs
@@ -74,7 +74,7 @@ public class ReadWrite
     int dxl_comm_result = COMM_TX_FAIL;                        // Communication result
     short[] dxl_goal_position = new short[]{DXL_MINIMUM_POSITION_VALUE, DXL_MAXIMUM_POSITION_VALUE};         // Goal position
 
-    byte dxl_error = 0;                                        // Dynamixel error
+    byte dxl_error = 0;                                        // DYNAMIXEL error
     short dxl_present_position = 0;                            // Present position
 
     // Open port
@@ -103,7 +103,7 @@ public class ReadWrite
       return;
     }
 
-    // Enable Dynamixel Torque
+    // Enable DYNAMIXEL Torque
     dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
     {
@@ -115,7 +115,7 @@ public class ReadWrite
     }
     else
     {
-      System.out.println("Dynamixel has been successfully connected");
+      System.out.println("DYNAMIXEL has been successfully connected");
     }
 
     while (true)
@@ -163,7 +163,7 @@ public class ReadWrite
       }
     }
 
-    // Disable Dynamixel Torque
+    // Disable DYNAMIXEL Torque
     dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
     {

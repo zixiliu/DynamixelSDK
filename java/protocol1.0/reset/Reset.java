@@ -19,16 +19,16 @@
 //
 // *********     Factory Reset Example      *********
 //
-//
-// Available Dynamixel model on this example : All models using Protocol 1.0
-// This example is designed for using a Dynamixel MX-28, and an USB2DYNAMIXEL.
-// To use another Dynamixel model, such as X series, see their details in E-Manual(emanual.robotis.com) and edit below variables yourself.
-// Be sure that Dynamixel PRO properties are already set as %% ID : 1 / Baudnum : 34 (Baudrate : 57600)
-//
+// This example is tested with MX series, AX series and USB2DYNAMIXEL or U2D2.
+// For other DYNAMIXEL series, refer to the e-Manual(emanual.robotis.com) and modify the control table properties.
+// Be sure that the ID and baudrate of DYNAMIXEL modules are properly configured.
+// DYNAMIXEL can easily be configured with DYNAMIXEL Wizard 2.0
+// https://emanual.robotis.com/docs/en/software/dynamixel/dynamixel_wizard2/
 
-// Be aware that:
-// This example resets all properties of Dynamixel to default values, such as %% ID : 1 / Baudnum : 34 (Baudrate : 57600)
-//
+// WARNING!!!
+// This example resets DYNAMIXEL to factory default values such as ID and Baudrate.
+// When multiple DYNAMIXEL modules are connected, executing Factory Reset may cause ID collision or lose of connection.
+// https://emanual.robotis.com/docs/en/dxl/protocol1/#factory-reset
 
 import java.util.Scanner;
 
@@ -37,19 +37,19 @@ public class Reset
   public static void main(String[] args)
   {
     // Control table address
-    short ADDR_MX_BAUDRATE              = 4;                   // Control table address is different in Dynamixel model
+    short ADDR_MX_BAUDRATE              = 4;                   // Control table address is different in DYNAMIXEL model
 
     // Protocol version
     int PROTOCOL_VERSION                = 1;                   // See which protocol version is used in the Dynamixel
 
     // Default setting
-    byte DXL_ID                         = 1;                   // Dynamixel ID: 1-
+    byte DXL_ID                         = 1;                   // DYNAMIXEL ID: 1-
     int BAUDRATE                        = 57600;
     String DEVICENAME                   = "/dev/ttyUSB0";      // Check which port is being used on your controller
                                                                // ex) Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
 
-    int FACTORYRST_DEFAULTBAUDRATE      = 57600;               // Dynamixel baudrate set by factoryreset
-    byte NEW_BAUDNUM                    = 1;                   // New baudnum to recover Dynamixel baudrate as it was
+    int FACTORYRST_DEFAULTBAUDRATE      = 57600;               // DYNAMIXEL baudrate set by factoryreset
+    byte NEW_BAUDNUM                    = 1;                   // New baudnum to recover DYNAMIXEL baudrate as it was
     byte OPERATION_MODE                 = 0x00;                // Mode is unavailable in Protocol 1.0 Reset
 
     int COMM_SUCCESS                    = 0;                   // Communication Success result value
@@ -58,7 +58,7 @@ public class Reset
     // Instead of getch
     Scanner scanner = new Scanner(System.in);
 
-    // Initialize Dynamixel class for java
+    // Initialize DYNAMIXEL class for java
     Dynamixel dynamixel = new Dynamixel();
 
     // Initialize PortHandler Structs
@@ -71,7 +71,7 @@ public class Reset
 
     int dxl_comm_result = COMM_TX_FAIL;                        // Communication result
 
-    byte dxl_error = 0;                                        // Dynamixel error
+    byte dxl_error = 0;                                        // DYNAMIXEL error
     byte dxl_baudnum_read;                                     // Read baudnum
 
     // Open port
@@ -143,7 +143,7 @@ public class Reset
       return;
     }
 
-    // Read Dynamixel baudnum
+    // Read DYNAMIXEL baudnum
     dxl_baudnum_read = dynamixel.read1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_MX_BAUDRATE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
     {
@@ -155,7 +155,7 @@ public class Reset
     }
     else
     {
-      System.out.printf("[ID: %d] Dynamixel baudnum is now : %d\n", DXL_ID, dxl_baudnum_read);
+      System.out.printf("[ID: %d] DYNAMIXEL baudnum is now : %d\n", DXL_ID, dxl_baudnum_read);
     }
 
     // Write new baudnum
@@ -170,7 +170,7 @@ public class Reset
     }
     else
     {
-      System.out.printf("[ID: %d] Set Dynamixel baudnum to : %d\n", DXL_ID, NEW_BAUDNUM);
+      System.out.printf("[ID: %d] Set DYNAMIXEL baudnum to : %d\n", DXL_ID, NEW_BAUDNUM);
     }
 
     // Set port baudrate to BAUDRATE
@@ -195,7 +195,7 @@ public class Reset
       System.out.println(e.getMessage());
     }
 
-    // Read Dynamixel baudnum
+    // Read DYNAMIXEL baudnum
     dxl_baudnum_read = dynamixel.read1ByteTxRx(port_num, PROTOCOL_VERSION, DXL_ID, ADDR_MX_BAUDRATE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
     {
@@ -207,7 +207,7 @@ public class Reset
     }
     else
     {
-      System.out.printf("[ID: %d] Dynamixel Baudnum is now : %d", DXL_ID, dxl_baudnum_read);
+      System.out.printf("[ID: %d] DYNAMIXEL Baudnum is now : %d", DXL_ID, dxl_baudnum_read);
     }
 
     return;
