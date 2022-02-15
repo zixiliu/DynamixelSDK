@@ -79,11 +79,11 @@ public class Reboot
     // Set port baudrate
     if (dynamixel.setBaudRate(port_num, BAUDRATE))
     {
-      System.out.println("Succeeded to change the baudrate!");
+      System.out.println("Succeeded to set the baudrate!");
     }
     else
     {
-      System.out.println("Failed to change the baudrate!");
+      System.out.println("Failed to set the baudrate!");
       System.out.println("Press any key to terminate...");
       scanner.nextLine();
       return;

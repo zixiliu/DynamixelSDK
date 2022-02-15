@@ -110,11 +110,11 @@ public class MultiPort
     // Set port1 baudrate
     if (dynamixel.setBaudRate(port_num1, BAUDRATE))
     {
-      System.out.println("Succeeded to change the baudrate!");
+      System.out.println("Succeeded to set the baudrate!");
     }
     else
     {
-      System.out.println("Failed to change the baudrate!");
+      System.out.println("Failed to set the baudrate!");
       System.out.println("Press any key to terminate...");
       scanner.nextLine();
       return;
@@ -123,11 +123,11 @@ public class MultiPort
     // Set port2 baudrate
     if (dynamixel.setBaudRate(port_num1, BAUDRATE))
     {
-      System.out.println("Succeeded to change the baudrate!");
+      System.out.println("Succeeded to set the baudrate!");
     }
     else
     {
-      System.out.println("Failed to change the baudrate!");
+      System.out.println("Failed to set the baudrate!");
       System.out.println("Press any key to terminate...");
       scanner.nextLine();
       return;

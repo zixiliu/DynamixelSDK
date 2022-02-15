@@ -1,47 +1,71 @@
-/*******************************************************************************
-* Copyright 2017 ROBOTIS CO., LTD.
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*******************************************************************************/
+// Copyright 2021 ROBOTIS CO., LTD.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
-/* Author: Ryu Woon Jung (Leon) */
-
+// Fast Sync Read Example Environment
+// - Youtube : https://youtu.be/claLIK8omIQ
 //
-// *********     Sync Write Example      *********
+// - DYNAMIXEL: X series (except XL-320), MX(2.0) series, P series
+//              ID = 1, 2, Baudrate = 57600bps, Protocol 2.0
+// - USB-Serial Interface : U2D2 (DYNAMIXEL Starter Set)
+// - Library: DYNAMIXEL SDK v3.8.1 or later
 //
-//
-// Available Dynamixel model on this example : All models using Protocol 1.0
-// This example is designed for using two Dynamixel MX-28, and an USB2DYNAMIXEL.
-// To use another Dynamixel model, such as X series, see their details in E-Manual(emanual.robotis.com) and edit below variables yourself.
-// Be sure that Dynamixel MX properties are already set as %% ID : 1 / Baudnum : 34 (Baudrate : 57600)
-//
+// Author: Will Son
 
 import java.util.Scanner;
+import package.Dynamixel;
 
-public class SyncWrite
+public class FastSyncRead
 {
   public static void main(String[] args)
   {
-    // Control table address
-    short ADDR_MX_TORQUE_ENABLE         = 24;                  // Control table address is different in Dynamixel model
-    short ADDR_MX_GOAL_POSITION         = 30;
-    short ADDR_MX_PRESENT_POSITION      = 36;
+    static final int X_SERIES = 0;
+    static final int P_SERIES = 1;
+    
+    // Properly use one of the definitions below
+    static DYNAMIXEL_MODEL = X_SERIES;
+    // static DYNAMIXEL_MODEL = P_SERIES;
+
+    // Control table address differs by DYNAMIXEL model
+    if (DYNAMIXEL_MODEL == P_SERIES)
+    {
+      short ADDR_TORQUE_ENABLE = 512;
+      short ADDR_GOAL_POSITION = 564;
+      short ADDR_PRESENT_POSITION = 580;
+      
+      // Minimum & Maximum range of Goal Position.
+      // Invalid value range will be ignored. Refer to the product eManual.
+      int DXL_MINIMUM_POSITION_VALUE = -150000;
+      int DXL_MAXIMUM_POSITION_VALUE = 150000;
+    }
+    else
+    {
+      short ADDR_TORQUE_ENABLE = 64;
+      short ADDR_GOAL_POSITION = 116;
+      short ADDR_PRESENT_POSITION = 132;
+
+      // Minimum & Maximum range of Goal Position.
+      // Invalid value range will be ignored. Refer to the product eManual.
+      int DXL_MINIMUM_POSITION_VALUE = 0;
+      int DXL_MAXIMUM_POSITION_VALUE = 1023;
+    }
 
     // Data Byte Length
-    short LEN_MX_GOAL_POSITION          = 2;
+    short LEN_GOAL_POSITION         = 4;
+    short LEN_PRESENT_POSITION      = 4;
 
     // Protocol version
-    int PROTOCOL_VERSION                = 1;                   // See which protocol version is used in the Dynamixel
+    int PROTOCOL_VERSION                = 2;                   // See which protocol version is used in the Dynamixel
 
     // Default setting
     byte DXL1_ID                        = 1;                   // Dynamixel ID: 1
@@ -52,9 +76,7 @@ public class SyncWrite
 
     byte TORQUE_ENABLE                  = 1;                   // Value for enabling the torque
     byte TORQUE_DISABLE                 = 0;                   // Value for disabling the torque
-    short DXL_MINIMUM_POSITION_VALUE    = 100;                 // Dynamixel will rotate between this value
-    short DXL_MAXIMUM_POSITION_VALUE    = 4000;                // and this value (note that the Dynamixel would not move when the position value is out of movable range. Check e-manual about the range of the Dynamixel you use.)
-    int DXL_MOVING_STATUS_THRESHOLD     = 10;                  // Dynamixel moving status threshold
+    int DXL_MOVING_STATUS_THRESHOLD     = 20;                  // Dynamixel moving status threshold
 
     String KEY_FOR_ESCAPE               = "e";                 // Key for escape
 
@@ -76,15 +98,19 @@ public class SyncWrite
     dynamixel.packetHandler();
 
     // Initialize Groupsyncwrite instance
-    int group_num = dynamixel.groupSyncWrite(port_num, PROTOCOL_VERSION, ADDR_MX_GOAL_POSITION, LEN_MX_GOAL_POSITION);
+    int groupwrite_num = dynamixel.groupSyncWrite(port_num, PROTOCOL_VERSION, ADDR_GOAL_POSITION, LEN_GOAL_POSITION);
+
+    // Initialize Groupsyncread Structs for Present Position
+    int groupread_num = dynamixel.groupSyncRead(port_num, PROTOCOL_VERSION, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION);
 
     int index = 0;
     int dxl_comm_result = COMM_TX_FAIL;                         // Communication result
     Boolean dxl_addparam_result = false;                        // AddParam result
-    short[] dxl_goal_position = new short[]{DXL_MINIMUM_POSITION_VALUE, DXL_MAXIMUM_POSITION_VALUE};         // Goal position
+    Boolean dxl_getdata_result = false;                         // GetParam result
+    int[] dxl_goal_position = new int[]{DXL_MINIMUM_POSITION_VALUE, DXL_MAXIMUM_POSITION_VALUE};         // Goal position
 
     byte dxl_error = 0;                                         // Dynamixel error
-    short dxl1_present_position = 0, dxl2_present_position = 0; // Present position
+    int dxl1_present_position = 0, dxl2_present_position = 0;   // Present position
 
     // Open port
     if (dynamixel.openPort(port_num))
@@ -113,7 +139,7 @@ public class SyncWrite
     }
 
     // Enable DYNAMIXEL#1 Torque
-    dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL1_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
+    dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL1_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
     {
       System.out.println(dynamixel.getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
@@ -128,7 +154,7 @@ public class SyncWrite
     }
 
     // Enable DYNAMIXEL#2 Torque
-    dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL2_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_ENABLE);
+    dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL2_ID, ADDR_TORQUE_ENABLE, TORQUE_ENABLE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
     {
       System.out.println(dynamixel.getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
@@ -142,6 +168,22 @@ public class SyncWrite
       System.out.printf("DYNAMIXEL#%d has been successfully connected\n", DXL2_ID);
     }
 
+    // Add parameter storage for DYNAMIXEL#1 present position value
+    dxl_addparam_result = dynamixel.groupSyncReadAddParam(groupread_num, DXL1_ID);
+    if (dxl_addparam_result != true)
+    {
+      System.out.printf("[ID: %d] groupSyncRead addparam failed\n", DXL1_ID);
+      return;
+    }
+
+    // Add parameter storage for DYNAMIXEL#2 present position value
+    dxl_addparam_result = dynamixel.groupSyncReadAddParam(groupread_num, DXL2_ID);
+    if (dxl_addparam_result != true)
+    {
+      System.out.printf("[ID: %d] groupSyncRead addparam failed\n", DXL2_ID);
+      return;
+    }
+
     while (true)
     {
       System.out.println("Press enter to continue! (or press e then enter to quit!)");
@@ -149,7 +191,7 @@ public class SyncWrite
         break;
 
       // Add DYNAMIXEL#1 goal position value to the Syncwrite storage
-      dxl_addparam_result = dynamixel.groupSyncWriteAddParam(group_num, DXL1_ID, dxl_goal_position[index], LEN_MX_GOAL_POSITION);
+      dxl_addparam_result = dynamixel.groupSyncWriteAddParam(groupwrite_num, DXL1_ID, dxl_goal_position[index], LEN_GOAL_POSITION);
       if (dxl_addparam_result != true)
       {
         System.out.printf("[ID: %d] groupSyncWrite addparam failed\n", DXL1_ID);
@@ -157,7 +199,7 @@ public class SyncWrite
       }
 
       // Add DYNAMIXEL#2 goal position value to the Syncwrite parameter storage
-      dxl_addparam_result = dynamixel.groupSyncWriteAddParam(group_num, DXL2_ID, dxl_goal_position[index], LEN_MX_GOAL_POSITION);
+      dxl_addparam_result = dynamixel.groupSyncWriteAddParam(groupwrite_num, DXL2_ID, dxl_goal_position[index], LEN_GOAL_POSITION);
       if (dxl_addparam_result != true)
       {
         System.out.printf("[ID: %d] groupSyncWrite addparam failed\n", DXL2_ID);
@@ -165,38 +207,43 @@ public class SyncWrite
       }
 
       // Syncwrite goal position
-      dynamixel.groupSyncWriteTxPacket(group_num);
+      dynamixel.groupSyncWriteTxPacket(groupwrite_num);
       if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
         System.out.println(dynamixel.getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
 
       // Clear syncwrite parameter storage
-      dynamixel.groupSyncWriteClearParam(group_num);
+      dynamixel.groupSyncWriteClearParam(groupwrite_num);
 
       do
       {
-        // Read DYNAMIXEL#1 present position
-        dxl1_present_position = dynamixel.read2ByteTxRx(port_num, PROTOCOL_VERSION, DXL1_ID, ADDR_MX_PRESENT_POSITION);
+        // Fast Sync Read present position
+        dynamixel.groupFastSyncReadTxRxPacket(groupread_num);
         if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
-        {
           System.out.println(dynamixel.getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
-        }
-        else if ((dxl_error = dynamixel.getLastRxPacketError(port_num, PROTOCOL_VERSION)) != 0)
+
+        // Check if groupsyncread data of DYNAMIXEL#1 is available
+        dxl_getdata_result = dynamixel.groupSyncReadIsAvailable(groupread_num, DXL1_ID, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION);
+        if (dxl_getdata_result != true)
         {
-          System.out.println(dynamixel.getRxPacketError(PROTOCOL_VERSION, dxl_error));
+          System.out.printf("[ID: %d] groupSyncRead getdata failed\n", DXL1_ID);
+          return;
         }
 
-        // Read DYNAMIXEL#2 present position
-        dxl2_present_position = dynamixel.read2ByteTxRx(port_num, PROTOCOL_VERSION, DXL2_ID, ADDR_MX_PRESENT_POSITION);
-        if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
+        // Check if groupsyncread data of DYNAMIXEL#2 is available
+        dxl_getdata_result = dynamixel.groupSyncReadIsAvailable(groupread_num, DXL2_ID, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION);
+        if (dxl_getdata_result != true)
         {
-          System.out.println(dynamixel.getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
-        }
-        else if ((dxl_error = dynamixel.getLastRxPacketError(port_num, PROTOCOL_VERSION)) != 0)
-        {
-          System.out.println(dynamixel.getRxPacketError(PROTOCOL_VERSION, dxl_error));
+          System.out.printf("[ID: %d] groupSyncRead getdata failed\n", DXL2_ID);
+          return;
         }
 
-        System.out.printf("[ID: %d] GoalPos:%d  PresPos:%d [ID: %d] GoalPos:%d  PresPos:%d\n", DXL1_ID, dxl_goal_position[index], dxl1_present_position, DXL2_ID, dxl_goal_position[index], dxl2_present_position);
+        // Get DYNAMIXEL#1 present position value
+        dxl1_present_position = dynamixel.groupSyncReadGetData(groupread_num, DXL1_ID, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION);
+
+        // Get DYNAMIXEL#2 present position value
+        dxl2_present_position = dynamixel.groupSyncReadGetData(groupread_num, DXL2_ID, ADDR_PRESENT_POSITION, LEN_PRESENT_POSITION);
+
+        System.out.printf("[ID: %d] GoalPos: %d  PresPos: %d [ID: %d] GoalPos: %d  PresPos: %d\n", DXL1_ID, dxl_goal_position[index], dxl1_present_position, DXL2_ID, dxl_goal_position[index], dxl2_present_position);
 
       } while ((Math.abs(dxl_goal_position[index] - dxl1_present_position) > DXL_MOVING_STATUS_THRESHOLD) || (Math.abs(dxl_goal_position[index] - dxl2_present_position) > DXL_MOVING_STATUS_THRESHOLD));
 
@@ -212,7 +259,7 @@ public class SyncWrite
     }
 
     // Disable DYNAMIXEL#1 Torque
-    dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL1_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE);
+    dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL1_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
     {
       System.out.println(dynamixel.getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));
@@ -223,7 +270,7 @@ public class SyncWrite
     }
 
     // Disable DYNAMIXEL#2 Torque
-    dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL2_ID, ADDR_MX_TORQUE_ENABLE, TORQUE_DISABLE);
+    dynamixel.write1ByteTxRx(port_num, PROTOCOL_VERSION, DXL2_ID, ADDR_TORQUE_ENABLE, TORQUE_DISABLE);
     if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
     {
       System.out.println(dynamixel.getTxRxResult(PROTOCOL_VERSION, dxl_comm_result));

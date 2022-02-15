@@ -54,9 +54,8 @@ interface LibFunction extends Library
   public int     getDataRead             (int port_num, int protocol_version, short data_length, short data_pos);
 
   public void    txPacket                (int port_num, int protocol_version);
-
   public void    rxPacket                (int port_num, int protocol_version);
-
+  public void    fastReadRxPacket        (int port_num, int protocol_version);
   public void    txRxPacket              (int port_num, int protocol_version);
 
   public void    ping                    (int port_num, int protocol_version, byte id);
@@ -75,6 +74,7 @@ interface LibFunction extends Library
 
   public void    readTx                  (int port_num, int protocol_version, byte id, short address, short length);
   public void    readRx                  (int port_num, int protocol_version, short length);
+  public void    fastSyncReadRx          (int port_num, int protocol_version, short length);
   public void    readTxRx                (int port_num, int protocol_version, byte id, short address, short length);
 
   public void    read1ByteTx             (int port_num, int protocol_version, byte id, short address);
@@ -105,6 +105,7 @@ interface LibFunction extends Library
   public void    regWriteTxRx            (int port_num, int protocol_version, byte id, short address, short length);
 
   public void    syncReadTx              (int port_num, int protocol_version, short start_address, short data_length, short param_length);
+  public void    fastSyncReadTx          (int port_num, int protocol_version, short start_address, short data_length, short param_length);
   // syncReadRx   -> GroupSyncRead
   // syncReadTxRx -> GroupSyncRead
 
@@ -150,6 +151,9 @@ interface LibFunction extends Library
   public void    groupSyncReadTxPacket       (int group_num);
   public void    groupSyncReadRxPacket       (int group_num);
   public void    groupSyncReadTxRxPacket     (int group_num);
+  public void    groupFastSyncReadTxPacket   (int group_num);
+  public void    groupFastSyncReadRxPacket   (int group_num);
+  public void    groupFastSyncReadTxRxPacket (int group_num);
 
   public Boolean groupSyncReadIsAvailable    (int group_num, byte id, short address, short data_length);
   public int     groupSyncReadGetData        (int group_num, byte id, short address, short data_length);
@@ -263,6 +267,11 @@ public class Dynamixel
     libFunction.rxPacket(port_num, protocol_version);
   }
 
+  public void fastReadRxPacket(int port_num, int protocol_version)
+  {
+    libFunction.fastReadRxPacket(port_num, protocol_version);
+  }
+
   public void txRxPacket(int port_num, int protocol_version)
   {
     libFunction.txRxPacket(port_num, protocol_version);
@@ -309,6 +318,10 @@ public class Dynamixel
   public void readRx(int port_num, int protocol_version, short length)
   {
     libFunction.readRx(port_num, protocol_version, length);
+  }
+  public void fastSyncReadRx(int port_num, int protocol_version, short length)
+  {
+    libFunction.fastSyncReadRx(port_num, protocol_version, length);
   }
   public void readTxRx(int port_num, int protocol_version, byte id, short address, short length)
   {
@@ -402,6 +415,11 @@ public class Dynamixel
   public void syncReadTx(int port_num, int protocol_version, short start_address, short data_length, short param_length)
   {
     libFunction.syncReadTx(port_num, protocol_version, start_address, data_length, param_length);
+  }
+
+  public void fastSyncReadTx(int port_num, int protocol_version, short start_address, short data_length, short param_length)
+  {
+    libFunction.fastSyncReadTx(port_num, protocol_version, start_address, data_length, param_length);
   }
 
   public void syncWriteTxOnly(int port_num, int protocol_version, short start_address, short data_length, short param_length)
@@ -518,6 +536,18 @@ public class Dynamixel
   public void groupSyncReadTxRxPacket(int group_num)
   {
     libFunction.groupSyncReadTxRxPacket(group_num);
+  }
+  public void groupFastSyncReadTxPacket(int group_num)
+  {
+    libFunction.groupFastSyncReadTxPacket(group_num);
+  }
+  public void groupFastSyncReadRxPacket(int group_num)
+  {
+    libFunction.groupFastSyncReadRxPacket(group_num);
+  }
+  public void groupFastSyncReadTxRxPacket(int group_num)
+  {
+    libFunction.groupFastSyncReadTxRxPacket(group_num);
   }
 
   public Boolean groupSyncReadIsAvailable(int group_num, byte id, short address, short data_length)
